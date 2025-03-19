@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ProductionManagement.Models.Prod>
+
+@{
+	Layout = "_Layout";
+}
+
+<h1>
+	Вся продукция на линии @Model.FirstOrDefault()?.line
+</h1>
+<p>
+	@Html.ActionLink("Последние 50", "Last50", "Prod", new { line = Model.FirstOrDefault()?.line }, new { @class = "btn btn-primary" })
+</p>
+
+<hr/>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				Дата
+			</th>
+			<th>
+				Время
+			</th>
+			<th>
+				Бирка
+			</th>
+			<th>
+				Продукт
+			</th>
+			<th>
+				Кол-во
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+							<tr>
+								<td>
+					@Html.DisplayFor(modelItem => item.date)
+								</td>
+			<td>
+					@(item.time.ToString(@"hh\:mm\:ss"))
+			</td>
+									<td>
+					@Html.DisplayFor(modelItem => item.label)
+								</td>
+								<td>
+					@Html.DisplayFor(modelItem => item.material)
+								</td>
+								<td>
+					@Html.DisplayFor(modelItem => item.amount)
+								</td>
+								<td>
+					@Html.ActionLink("Details", "Details", "Prod", new { label = item.label }, new { @class = "btn btn-secondary" })
+								</td>
+							</tr>
+		}
+	</tbody>
+</table>

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ProductionManagement.Models.Line>
+
+@{
+    Layout = "_Layout";
+}
+
+<p>
+    @Html.ActionLink("Добавить", "Details", "Lines", new { mode = "create" }, new { @class = "btn btn-primary btn-sm" })
+
+    <!-- Кнопка редактирования с атрибутом data-line-name -->
+    <a href="#" id="editButton" class="btn btn-primary btn-sm disabled">Изменить</a>
+    <a href="#" id="deleteButton" class="btn btn-danger btn-sm disabled">Удалить</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Имя линии</th>
+            <th>IP</th>
+            <th>Принтер</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(
+                             item.name,
+                             "Last50",
+                             "Prod",
+                             new { line = item.name.Trim() },
+                             new { @class = $"btn {(item.is_online ? "btn-success" : "btn-danger")}" }
+                             )
+                </td>
+                <td>
+                    <input type="radio" name="selectedLineId" value="@item.name" onclick="handleRadioClick(this)" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ip)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.printer)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function handleRadioClick(radio) {
+        const selectedLineId = radio.value;
+
+        // Активируем кнопку редактирования
+        $('#editButton').removeClass('disabled');
+
+        // Активируем кнопку удаления
+        $('#deleteButton').removeClass('disabled');
+
+        // Устанавливаем атрибут data-line-name для кнопки редактирования
+        $('#editButton').attr('data-line-name', selectedLineId);
+
+        // Обновляем href кнопки редактирования
+        $('#editButton').attr('href', `/Lines/Details/${selectedLineId}?mode=edit`);
+
+        // Обновляем href кнопки удаления
+        $('#deleteButton').attr('href', `/Lines/Details/${selectedLineId}?mode=delete`);
+    }
+</script>

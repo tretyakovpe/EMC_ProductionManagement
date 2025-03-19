@@ -1,0 +1,64 @@
+﻿@model ProductionManagement.Models.Prod
+
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Details</title>
+</head>
+<body>
+
+	<div>
+		<h4>
+			@Html.DisplayFor(model => model.label)
+		</h4>
+		<hr />
+		<dl class="row">
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.date)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.date)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.time)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.time)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.label)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.label)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.line)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.line)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.material)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.material)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.amount)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.amount)
+			</dd>
+		</dl>
+	</div>
+	<div>
+		@Html.ActionLink("Back to List", "Index", "Lines", "", new { @class = "btn btn-secondary" });
+	</div>
+</body>
+</html>

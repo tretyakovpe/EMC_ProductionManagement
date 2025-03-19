@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ProductionManagement.Models.Material>
+
+@{
+    Layout = "_Layout";
+}
+
+<p>
+    @Html.ActionLink("Create New", "Create", "Materials", null, new { @class = "btn btn-primary" })
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaterialCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Destination)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HU)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Netto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brutto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityInHU)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaterialCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HU)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Netto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brutto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuantityInHU)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Materials", new { id = item.MaterialID }, new { @class = "btn btn-primary btn-sm" }) |
+                    @Html.ActionLink("Details", "Details", "Materials", new { id = item.MaterialID }, new { @class = "btn btn-secondary btn-sm" }) |
+                    @Html.ActionLink("Delete", "Delete", "Materials", new { id = item.MaterialID }, new { @class = "btn btn-danger btn-sm" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

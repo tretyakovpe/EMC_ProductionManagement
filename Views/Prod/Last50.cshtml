@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ProductionManagement.Models.Prod>
+
+@{
+	Layout = "_Layout";
+}
+
+<h1>
+	Последние 50 коробок продукции на линии @Model.FirstOrDefault()?.line
+</h1>
+
+<p>
+	@Html.ActionLink("Показать все", "Index", "Prod", new { line = Model.FirstOrDefault()?.line }, new { @class = "btn btn-primary" })
+</p>
+
+<hr/>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.date)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.time)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.label)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.material)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.amount)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.date)
+						</td>
+						<td>
+					@(item.time.ToString(@"hh\:mm\:ss"))
+					@*Html.DisplayFor(modelItem => item.time, "{0:HH:mm:ss}")*@
+						</td>
+						<td>
+					@Html.DisplayFor(modelItem => item.label)
+						</td>
+						<td>
+					@Html.DisplayFor(modelItem => item.material)
+						</td>
+						<td>
+					@Html.DisplayFor(modelItem => item.amount)
+						</td>
+						<td>
+					@Html.ActionLink("Details", "Details", "Prod", new { label = item.label }, new { @class = "btn btn-secondary" })
+						</td>
+					</tr>
+		}
+	</tbody>
+</table>
