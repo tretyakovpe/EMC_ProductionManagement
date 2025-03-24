@@ -7,35 +7,38 @@ namespace ProductionManagement.Models
     {
         // Свойство для поля 'name' в базе данных
         [Key] // Указываем, что это первичный ключ
-        [Column(TypeName = "nchar(3)")] // Тип данных и длина
+        [Column("name", TypeName = "nchar(3)")] // Тип данных и длина
         [Required] // Обязательное свойство
-        public string name { get; set; }
+        public string Name { get; set; }
 
         // Свойство для поля 'ip'
-        [Column(TypeName = "nchar(15)")]
+        [Column("ip", TypeName = "nchar(15)")]
         [Required]
-        public string ip { get; set; }
+        public string Ip { get; set; }
 
         // Свойство для поля 'port'
-        [Column(TypeName = "int")]
-        public int? port { get; set; } // nullable, так как значение может быть null
+        [Column("port", TypeName = "int")]
+        public int? Port { get; set; } // nullable, так как значение может быть null
 
         // Свойство для поля 'printer'
-        [Column(TypeName = "nchar(10)")]
-        public string printer { get; set; } // Nullable, так как значение может быть null
+        [Column("printer", TypeName = "nchar(10)")]
+        public string Printer { get; set; } // Nullable, так как значение может быть null
 
         // Свойство для поля 'print_label'
-        [Column(TypeName = "bit")]
+        [Column("print_label", TypeName = "bit")]
         [Required]
-        public bool print_label { get; set; }
+        public bool PrintLabel { get; set; }
 
         // Свойство для поля 'is_online'
-        [Column(TypeName = "bit")]
-        [Required]
-        public bool is_online { get; set; }
+        [Column("is_online", TypeName = "bit")]
+        public bool IsOnline { get; set; }
 
         // Свойство для поля 'last_check'
-        [Column(TypeName = "datetime")]
-        public DateTime? last_check { get; set; } // Nullable, так как значение может быть null
+        [Column("last_check", TypeName = "datetime")]
+        public DateTime? LastCheck { get; set; } // Nullable, так как значение может быть null
+
+        // Свойство для поля 'is_active'
+        [Column("is_active", TypeName = "bit")]
+        public bool IsActive { get; set; }
     }
 }

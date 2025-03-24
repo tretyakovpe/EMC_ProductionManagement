@@ -1,70 +1,51 @@
 ﻿@model IEnumerable<ProductionManagement.Models.Line>
 
 @{
-    Layout = "_Layout";
+	Layout = "_Layout";
 }
 
-<p>
-    @Html.ActionLink("Добавить", "Details", "Lines", new { mode = "create" }, new { @class = "btn btn-primary btn-sm" })
+<div class="container-fluid">
+	<div class="row">
+		<p>
+			@Html.ActionLink("Добавить", "Details", "Lines", new { mode = "create" }, new { @class = "btn btn-primary btn-sm" })
+		</p>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<textarea id="logs" rows="20" cols="40" style="width: 100%; height: 100%; overflow-y: scroll;" readonly></textarea>
+		</div>
+	</div>
+	<div class="row">
+		@foreach (var item in Model)
+		{
+			<div class="card text-white @(item.IsActive ? "border-success" : "border-danger") col-md-2" style="max-width: 20rem;">
+				<div class="card-header">
+					@Html.ActionLink("Линия " + item.Name, "Last50", "Prod", new { line = item.Name.Trim() }, null)
+				</div>
+				<div class="card-body">
+					<p class="card-text">IP: @Html.DisplayFor(modelItem => item.Ip)</p>
+					<p class="card-text">Принтер: @Html.DisplayFor(modelItem => item.Printer)</p>
+					<a href="/Lines/Details/@item.Name?mode=edit" class="card-link">Свойства</a>
+				</div>
+				<div class="card-footer text-muted">
+					<p>@item.LastCheck.ToString()</p>
+				</div>
+			</div>
+		}
+	</div>
+</div>
 
-    <!-- Кнопка редактирования с атрибутом data-line-name -->
-    <a href="#" id="editButton" class="btn btn-primary btn-sm disabled">Изменить</a>
-    <a href="#" id="deleteButton" class="btn btn-danger btn-sm disabled">Удалить</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Имя линии</th>
-            <th>IP</th>
-            <th>Принтер</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.ActionLink(
-                             item.name,
-                             "Last50",
-                             "Prod",
-                             new { line = item.name.Trim() },
-                             new { @class = $"btn {(item.is_online ? "btn-success" : "btn-danger")}" }
-                             )
-                </td>
-                <td>
-                    <input type="radio" name="selectedLineId" value="@item.name" onclick="handleRadioClick(this)" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ip)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.printer)
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
+<script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
 <script>
-    function handleRadioClick(radio) {
-        const selectedLineId = radio.value;
+	const connection = new signalR.HubConnectionBuilder()
+		.withUrl("/loghub")
+		.configureLogging(signalR.LogLevel.Information)
+		.build();
 
-        // Активируем кнопку редактирования
-        $('#editButton').removeClass('disabled');
+	connection.start().then(() => document.getElementById("logs").value += "SignalR connected")
+		.catch((err) => console.error(err.toString()));
 
-        // Активируем кнопку удаления
-        $('#deleteButton').removeClass('disabled');
-
-        // Устанавливаем атрибут data-line-name для кнопки редактирования
-        $('#editButton').attr('data-line-name', selectedLineId);
-
-        // Обновляем href кнопки редактирования
-        $('#editButton').attr('href', `/Lines/Details/${selectedLineId}?mode=edit`);
-
-        // Обновляем href кнопки удаления
-        $('#deleteButton').attr('href', `/Lines/Details/${selectedLineId}?mode=delete`);
-    }
+	connection.on("ReceiveLog", (message) => {
+		document.getElementById("logs").value += `${message}\n`;
+	});
 </script>

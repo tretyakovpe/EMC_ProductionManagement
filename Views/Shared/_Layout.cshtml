@@ -5,19 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]Контроль производства</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/material-design.css">
+    <link rel="stylesheet" href="~/css/site.css">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
         <div class="container">
-            @Html.ActionLink("ProductionManagement", "Index", "Home", null, new { @class = "navbar-brand" })
+            @Html.ActionLink("Контроль производства", "Index", "Lines", null, new { @class = "navbar-brand" })
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        @Html.ActionLink("Home", "Index", "Home", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Home", "Index", "Lines", null, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
                         @Html.ActionLink("Линии", "Index", "Lines", null, new { @class = "nav-link" })
@@ -31,7 +34,7 @@
     </nav>
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="row">
             @RenderBody()
         </main>
     </div>
@@ -41,9 +44,6 @@
             &copy; 2025 - Контроль производства
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

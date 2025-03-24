@@ -19,7 +19,6 @@ namespace ProductionManagement.Controllers
         public async Task<IActionResult> Details(string id, string mode)
         {
             if (id == null && mode != "create") return NotFound();
-
             var line = await _context.Lines.FindAsync(id);
             ViewBag.mode = mode;
             switch (mode)
@@ -41,16 +40,6 @@ namespace ProductionManagement.Controllers
         public async Task<IActionResult> Details(Line line, string mode)
         {
             if (!ModelState.IsValid) return View(line);
-            // Выводим в консоль все поля переданной модели
-            Console.WriteLine($"Полученная модель:");
-            Console.WriteLine($"\tName: {line.name}");
-            Console.WriteLine($"\tIP: {line.ip}");
-            Console.WriteLine($"\tPort: {line.port}");
-            Console.WriteLine($"\tPrinter: {line.printer}");
-            Console.WriteLine($"\tPrint Label: {line.print_label}");
-            Console.WriteLine($"\tIs Online: {line.is_online}");
-            Console.WriteLine($"\tLast Check: {line.last_check}");
-
             switch (mode)
             {
                 case "create": _context.Add(line); break;
@@ -61,6 +50,40 @@ namespace ProductionManagement.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Lines/Delete/5
+        public IActionResult Delete(int id)
+        {
+            // Получаем запись по ID
+            var line = _context.Lines.Find(id);
+
+            if (line == null)
+            {
+                return NotFound(); // Если запись не найдена
+            }
+
+            // Устанавливаем режим удаления
+            ViewBag.Mode = "delete";
+
+            return View("Details", line); // Возвращаем представление Details с установленным режимом удаления
+        }
+
+        // POST: Lines/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            // Получаем запись по ID
+            var line = await _context.Lines.FindAsync(id);
+
+            if (line != null)
+            {
+                _context.Lines.Remove(line);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index)); // Перенаправляем на список записей после успешного удаления
         }
     }
 }

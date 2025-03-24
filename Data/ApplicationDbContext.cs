@@ -23,7 +23,7 @@ namespace ProductionManagement.Data
             modelBuilder.Entity<Line>().ToTable("plc");
 
             // Настройка ключей и отношений для таблицы PLC
-            modelBuilder.Entity<Line>().HasKey(l => l.name); // Предположим, что Name является ключевым полем
+            modelBuilder.Entity<Line>().HasKey(l => l.Name); // Предположим, что Name является ключевым полем
 
             // Настройка соответствия модели Material с таблицей Materials
             modelBuilder.Entity<Material>().ToTable("materials");

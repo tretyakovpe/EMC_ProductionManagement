@@ -1,62 +1,70 @@
 ﻿@model ProductionManagement.Models.Line
 
 @{
-    Layout = "_Layout";
-    bool isCreateMode = Model.name == null;
-    bool isDeleteMode = ViewBag.mode == "delete";
+	Layout = "_Layout";
+	bool isCreateMode = Model.Name == null;
+	bool isDeleteMode = ViewBag.mode == "delete";
 }
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
+	<meta name="viewport" content="width=device-width" />
+	<title>Details</title>
 </head>
 <body>
-    <div>
-        <h4>Line</h4>
-        <hr />
-        @if (isDeleteMode)
-        {
-            <p>Are you sure you want to delete this record?</p>
-        }
-        else
-        {
-            <form asp-action="Details" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="id" />
-                <input type="hidden" name="mode" value="@ViewBag.Mode" />
-                <dl class="row">
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.name)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.name) : Html.DisplayFor(m => m.name))</dd>
+	<div>
+		<h4>Line</h4>
+		<hr />
+		@if (isDeleteMode)
+		{
+			<form asp-action="Delete" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" asp-for="id" />
+				<input type="hidden" name="mode" value="@ViewBag.Mode" />
 
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ip)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.ip) : Html.DisplayFor(m => m.ip))</dd>
+				<p>Are you sure you want to delete this record?</p>
 
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.port)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.port) : Html.DisplayFor(m => m.port))</dd>
+				<div class="form-group">
+					<a asp-action="Index" class="btn btn-default">Cancel</a>
+					<button type="submit" class="btn btn-danger">Delete</button>
+				</div>
+			</form>
+		}
+		else
+		{
+			<form asp-action="Details" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" asp-for="id" />
+				<input type="hidden" name="mode" value="@ViewBag.Mode" />
+				<dl class="row">
+					<dt class="col-sm-2">Название</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.Name) : Html.DisplayFor(m => m.Name))</dd>
 
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.printer)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.printer) : Html.DisplayFor(m => m.printer))</dd>
+					<dt class="col-sm-2">IP адрес</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.Ip) : Html.DisplayFor(m => m.Ip))</dd>
 
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.print_label)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.print_label) : Html.DisplayFor(m => m.print_label))</dd>
+					<dt class="col-sm-2">Порт</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.Port) : Html.DisplayFor(m => m.Port))</dd>
 
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.is_online)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.is_online) : Html.DisplayFor(m => m.is_online))</dd>
+					<dt class="col-sm-2">Принтер</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.Printer) : Html.DisplayFor(m => m.Printer))</dd>
 
-                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.last_check)</dt>
-                    <dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.last_check) : Html.DisplayFor(m => m.last_check))</dd>
-                </dl>
-                @if (!isDeleteMode)
-                {
-                    <button type="submit" class="btn btn-primary">Save</button>
-                }
-                else
-                {
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                }
-            </form>
-        }
-    </div>
+					<dt class="col-sm-2">Нужна печать?</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.PrintLabel) : Html.DisplayFor(m => m.PrintLabel))</dd>
+
+					<dt class="col-sm-2">Активирована?</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.IsActive) : Html.DisplayFor(m => m.IsActive))</dd>
+				</dl>
+				@if (!isDeleteMode)
+				{
+					<button type="submit" class="btn btn-primary">Сохранить</button>
+				}
+				else
+				{
+					<button asp-action="Details" type="submit" class="btn btn-danger">Отмена</button>
+				}
+			</form>
+		}
+	</div>
 </body>
 </html>
