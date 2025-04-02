@@ -5,11 +5,11 @@
 }
 
 <h1>
-	Последние 50 коробок продукции на линии @Model.FirstOrDefault()?.line
+	Последние 50 коробок продукции на линии @Model.FirstOrDefault()?.Line
 </h1>
 
 <p>
-	@Html.ActionLink("Показать все", "Index", "Prod", new { line = Model.FirstOrDefault()?.line }, new { @class = "btn btn-primary" })
+	@Html.ActionLink("Показать все", "Index", "Prod", new { line = Model.FirstOrDefault()?.Line }, new { @class = "btn btn-primary" })
 </p>
 
 <hr/>
@@ -17,19 +17,19 @@
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.date)
+				@Html.DisplayNameFor(model => model.Date)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.time)
+				@Html.DisplayNameFor(model => model.Time)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.label)
+				@Html.DisplayNameFor(model => model.Label)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.material)
+				@Html.DisplayNameFor(model => model.Material)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.amount)
+				@Html.DisplayNameFor(model => model.Amount)
 			</th>
 			<th></th>
 		</tr>
@@ -39,23 +39,23 @@
 		{
 			<tr>
 				<td>
-					@Html.DisplayFor(modelItem => item.date)
+					@Html.DisplayFor(modelItem => item.Date)
 						</td>
 						<td>
-					@(item.time.ToString(@"hh\:mm\:ss"))
+					@(item.Time.ToString(@"hh\:mm\:ss"))
 					@*Html.DisplayFor(modelItem => item.time, "{0:HH:mm:ss}")*@
 						</td>
 						<td>
-					@Html.DisplayFor(modelItem => item.label)
+					@Html.DisplayFor(modelItem => item.Label)
 						</td>
 						<td>
-					@Html.DisplayFor(modelItem => item.material)
+					@Html.DisplayFor(modelItem => item.Material)
 						</td>
 						<td>
-					@Html.DisplayFor(modelItem => item.amount)
+					@Html.DisplayFor(modelItem => item.Amount)
 						</td>
 						<td>
-					@Html.ActionLink("Details", "Details", "Prod", new { label = item.label }, new { @class = "btn btn-secondary" })
+					@Html.ActionLink("Details", "Details", "Prod", new { label = item.Label }, new { @class = "btn btn-secondary" })
 						</td>
 					</tr>
 		}

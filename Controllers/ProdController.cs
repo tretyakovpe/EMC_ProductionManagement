@@ -17,9 +17,9 @@ namespace ProductionManagement.Controllers
         public async Task<IActionResult> Index(string line)
         {
             var prods = await _context.Prods
-                .Where(p => p.line == line)
-                .OrderByDescending(p => p.date)     // Первичная сортировка по дате в порядке убывания
-                .ThenByDescending(p => p.time)      // Дополнительная сортировка по времени в порядке убывания
+                .Where(p => p.Line == line)
+                .OrderByDescending(p => p.Date)     // Первичная сортировка по дате в порядке убывания
+                .ThenByDescending(p => p.Time)      // Дополнительная сортировка по времени в порядке убывания
                 .ToListAsync();
 
             return View(prods);
@@ -29,9 +29,9 @@ namespace ProductionManagement.Controllers
         public async Task<IActionResult> Last50(string line)
         {
             var prods = await _context.Prods
-                .Where(p => p.line == line)  // Фильтрация по линии
-                .OrderByDescending(p => p.date)  // Сортировка по дате в порядке убывания
-                .ThenByDescending(p => p.time)      // Дополнительная сортировка по времени в порядке убывания
+                .Where(p => p.Line == line)  // Фильтрация по линии
+                .OrderByDescending(p => p.Date)  // Сортировка по дате в порядке убывания
+                .ThenByDescending(p => p.Time)      // Дополнительная сортировка по времени в порядке убывания
                 .Take(50)  // Ограничение до 50 последних строк
                 .ToListAsync();
 
@@ -47,7 +47,7 @@ namespace ProductionManagement.Controllers
             }
 
             var prod = await _context.Prods
-                .FirstOrDefaultAsync(m => m.label == label);
+                .FirstOrDefaultAsync(m => m.Label == label);
             if (prod == null)
             {
                 return NotFound();

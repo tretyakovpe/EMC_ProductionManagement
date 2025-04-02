@@ -1,87 +1,91 @@
-﻿namespace ProductionManagement.Services;
-
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 using ProductionManagement.Data;
 using ProductionManagement.Hubs;
 using ProductionManagement.Models;
-using System.Collections.Concurrent;
+
+namespace ProductionManagement.Services;
 
 public class LinesManagerService : BackgroundService
 {
-    private static ConcurrentDictionary<string, Line> _linesCache = new ConcurrentDictionary<string, Line>();
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<LinesManagerService> _logger;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly LoggerService _logger;
     private readonly IHubContext<LogHub> _hubContext;
-    private readonly IServiceProvider _serviceProvider;
-    private Timer _timer;
+    private readonly PollingSettings _pollingSettings;
+    private PeriodicTimer? _timer;
 
-    public LinesManagerService(ApplicationDbContext dbContext, ILogger<LinesManagerService> logger, IServiceProvider serviceProvider, IHubContext<LogHub> hubContext)
+    public LinesManagerService(
+        IServiceScopeFactory scopeFactory,
+        LoggerService logger,
+        IHubContext<LogHub> hubContext,
+        IOptions<PollingSettings> pollingSettings)
     {
-        _dbContext = dbContext;
+        _scopeFactory = scopeFactory;
         _logger = logger;
-        _serviceProvider = serviceProvider;
         _hubContext = hubContext;
+        _pollingSettings = pollingSettings.Value;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        sendLog($"Lines Fetching Service is starting.");
+        _logger.SendLog("Lines Manager Service is starting.");
 
-        // Запускаем таймер, который будет получать данные каждые 5 секунд
-        _timer = new Timer(FetchLines, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(_pollingSettings.LinesFetchIntervalInSeconds));
 
-        await Task.CompletedTask;
+        while (await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                FetchLines();
+            }
+            catch (Exception ex)
+            {
+                _logger.SendLog($"{ex} An error occurred while fetching lines.");
+            }
+        }
     }
 
-    private void FetchLines(object state)
+    private void FetchLines()
     {
-        try
+        using (var scope = _scopeFactory.CreateScope())
         {
-            // Получаем список активных линий из базы данных
-            List<Line> activeLines = _dbContext.Lines.Where(l => l.IsActive).ToList();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+            // Получаем список активных линий и удаляем лишние пробелы
+            var activeLines = dbContext.Lines
+                .Where(l => l.IsActive)
+                .Select(l => new Line
+                {
+                    Name = l.Name.Trim(), // Удаляем пробелы
+                    Ip = l.Ip.Trim(),
+                    Port = l.Port,
+                    Printer = l.Printer.Trim(),
+                    PrintLabel = l.PrintLabel,
+                    IsOnline = l.IsOnline,
+                    LastCheck = l.LastCheck,
+                    IsActive = l.IsActive
+                })
+                .ToList();
             // Обновляем внутреннее хранилище линий
             UpdateInternalStorage(activeLines);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while fetching lines.");
         }
     }
 
     private void UpdateInternalStorage(List<Line> lines)
     {
-        // Очистка старых данных
-        _linesCache.Clear();
-
-        // Добавление новых данных
+        LinesData.LinesCache.Clear();
         foreach (var line in lines)
         {
-            _linesCache.TryAdd(line.Name, line);
-            sendLog($"Добавлена линия {line.Name}");
+            LinesData.LinesCache.TryAdd(line.Name, line);
         }
     }
 
-    // Получение актуальных данных
-    public List<Line> GetInternalStorage()
+    public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        return _linesCache.Values.ToList();
-    }
+        _logger.SendLog("Lines Manager Service is stopping.");
 
-    private void sendLog(string message)
-    {
-        _logger.LogInformation(message);
-        _hubContext.Clients.All.SendAsync("ReceiveLog", message);
-    }
+        _timer?.Dispose();
 
-
-    public override Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Lines Fetching Service is stopping.");
-
-        // Останавливаем таймер перед завершением службы
-        _timer?.Change(Timeout.Infinite, 0);
-
-        return Task.CompletedTask;
+        await base.StopAsync(cancellationToken);
     }
 }

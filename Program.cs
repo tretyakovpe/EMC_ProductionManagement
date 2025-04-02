@@ -1,18 +1,34 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProductionManagement.Data;
-using ProductionManagement.Services;
 using ProductionManagement.Hubs;
+using ProductionManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Настройки конфигурации
+//builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 // Регистрация контекста базы данных
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Регистрация SignalR
 builder.Services.AddSignalR();
-builder.Services.AddHostedService<LinesPollingService>();
+
+// Регистрация Background Services
 builder.Services.AddHostedService<LinesManagerService>();
+builder.Services.AddHostedService<LinesPollingService>();
+builder.Services.AddSingleton<LinesPollingService>();
+builder.Services.AddSingleton<LinesManagerService>();
+builder.Services.AddScoped<LabelService>();
+builder.Services.AddScoped<PlcService>();
+builder.Services.AddTransient<LoggerService>();
+
+// Регистрация контроллеров и представлений
 builder.Services.AddControllersWithViews();
+
+// Добавление конфигурации для временных интервалов
+builder.Services.Configure<PollingSettings>(builder.Configuration.GetSection("PollingSettings"));
 
 var app = builder.Build();
 

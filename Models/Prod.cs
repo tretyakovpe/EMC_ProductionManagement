@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ProductionManagement.Models
 {
@@ -7,27 +6,28 @@ namespace ProductionManagement.Models
     {
         [Required]
         [DataType(DataType.Date)]
-        public DateTime date { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime Date { get; set; }
 
         [Required]
         [DataType(DataType.Time)]
         [DisplayFormat(DataFormatString = "{0:HH:mm:ss}")]
-        public TimeSpan time { get; set; }
+        public TimeSpan Time { get; set; }
 
         [Key]
         [Required]
         [StringLength(12)]
-        public string label { get; set; }
+        public string Label { get; set; }
 
         [Required]
         [StringLength(3)]
-        public string line { get; set; }
+        public string Line { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string material { get; set; }
+        public string Material { get; set; }
 
         [Required]
-        public int amount { get; set; }
+        public int Amount { get; set; }
     }
 }
