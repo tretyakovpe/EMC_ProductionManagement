@@ -11,7 +11,7 @@
 	@Html.ActionLink("Последние 50", "Last50", "Prod", new { line = Model.FirstOrDefault()?.Line }, new { @class = "btn btn-primary" })
 </p>
 
-<hr/>
+<hr />
 <table class="table">
 	<thead>
 		<tr>
@@ -36,26 +36,26 @@
 	<tbody>
 		@foreach (var item in Model)
 		{
-							<tr>
-								<td>
+			<tr>
+				<td>
 					@Html.DisplayFor(modelItem => item.Date)
-								</td>
-			<td>
+				</td>
+				<td>
 					@(item.Time.ToString(@"hh\:mm\:ss"))
-			</td>
-									<td>
+				</td>
+				<td>
 					@Html.DisplayFor(modelItem => item.Label)
-								</td>
-								<td>
+				</td>
+				<td>
 					@Html.DisplayFor(modelItem => item.Material)
-								</td>
-								<td>
+				</td>
+				<td>
 					@Html.DisplayFor(modelItem => item.Amount)
-								</td>
-								<td>
-					@Html.ActionLink("Details", "Details", "Prod", new { label = item.Label }, new { @class = "btn btn-secondary" })
-								</td>
-							</tr>
+				</td>
+				<td>
+					@Html.ActionLink("Подробно", "Details", "Prod", new { label = item.Label }, new { @class = "btn btn-secondary" })
+				</td>
+			</tr>
 		}
 	</tbody>
 </table>

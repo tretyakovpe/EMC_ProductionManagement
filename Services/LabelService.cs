@@ -20,10 +20,7 @@ namespace ProductionManagement.Services
             _logger = logger;
         }
 
-        public void Dispose()
-        {
-
-        }
+        public void Dispose() { }
 
         public async Task GenerateAndPrintLabelAsync(Prod box, string Description, Material material, string PrinterName)
         {
@@ -51,21 +48,23 @@ namespace ProductionManagement.Services
             try
             {
                 Label label = new();
-                string DT = DateTime.Now.ToString("dd.MM.yyyy HH:mm: ss");
-                label.LabelFields[0].Value = "АвтоВАЗ";
-                label.LabelFields[1].Value = material.Destination;
-                label.LabelFields[2].Value = "992410";
-                label.LabelFields[4].Value = (material.Netto * box.Amount).ToString();
-                label.LabelFields[5].Value = (material.Netto * box.Amount + material.Brutto).ToString();
-                label.LabelFields[6].Value = "1";
-                label.LabelFields[7].Value = material.CustomerCode;
-                label.LabelFields[8].Value = box.Amount.ToString();
-                label.LabelFields[9].Value = box.Material;
-                label.LabelFields[10].Value = box.Label;
-                label.LabelFields[11].Value = "M0FAP";
-                label.LabelFields[12].Value = DT;
-                label.LabelFields[13].Value = material.HU;
-                label.LabelFields[14].Value = description;
+                string DT = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
+
+                // Теперь устанавливаем значения полей
+                label.SetField("Destination", "АвтоВАЗ");
+                label.SetField("Delivery place", material.Destination);
+                label.SetField("Document #", "992410");
+                label.SetField("Netto", (material.Netto * box.Amount).ToString());
+                label.SetField("Brutto", (material.Netto * box.Amount + material.Brutto).ToString());
+                label.SetField("Boxes", "1");
+                label.SetField("Product", material.CustomerCode);
+                label.SetField("Quantity", box.Amount.ToString());
+                label.SetField("Part name", box.Material);
+                label.SetField("Label number", box.Label);
+                label.SetField("Supplier", "M0FAP");
+                label.SetField("Date", DT);
+                label.SetField("Packing type", material.HU);
+                label.SetField("Description", description); // Обратите внимание, тут имя поля пустое (" ")
 
                 PdfFontFactory.RegisterSystemDirectories();
                 //var fontLibrary = PdfFontFactory.GetRegisteredFonts();
@@ -80,7 +79,7 @@ namespace ProductionManagement.Services
                 Barcode128 barcode = new(pdfDoc);
                 double mm = Label.MM;
 
-                foreach (int[] b in Label.borders)
+                foreach (int[] b in Label.Borders)
                 {
                     canvas
                         .MoveTo(b[2] * mm, b[3] * mm)
@@ -94,16 +93,17 @@ namespace ProductionManagement.Services
                     doc.ShowTextAligned(new Paragraph(field.Name).SetFontSize(8).SetFont(font),
                         (float)(field.X * mm), (float)(field.Y * mm), TextAlignment.LEFT, VerticalAlignment.TOP);
                     //  ЗНАЧЕНИЕ
-                    doc.ShowTextAligned(new Paragraph(field.Value).SetFontSize(18).SetFont(font),
+                    doc.ShowTextAligned(new Paragraph(field.Text).SetFontSize(18).SetFont(font),
                         (float)(field.X * mm + 20), (float)(field.Y * mm - 9), TextAlignment.LEFT, VerticalAlignment.TOP);
                     //  ШТРИХКОД
                     if (field.Barcode == true)
                     {
-                        barcode.SetCode(field.Code + field.Value);
+                        barcode.SetCode(field.Code + field.Text);
                         barcode.SetSize(1);
-                        barcode.SetBarHeight(32);
+                        barcode.SetBarHeight(field.bcSize);
                         PdfFormXObject img = barcode.CreateFormXObject(ColorConstants.BLACK, ColorConstants.WHITE, pdfDoc);
-                        canvas.AddXObjectAt(img, (float)(field.X * mm + 60), (float)(field.Y * mm - 70));
+                        //canvas.AddXObjectAt(img, (float)(field.X * mm + 60), (float)(field.Y * mm - 70));
+                        canvas.AddXObjectAt(img, (float)(field.bcX * mm), (float)(field.bcY * mm));
                     }
                 }
                 canvas.Release();

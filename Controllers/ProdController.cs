@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductionManagement.Data;
+using ProductionManagement.Models;
 
 namespace ProductionManagement.Controllers
 {
@@ -46,14 +47,18 @@ namespace ProductionManagement.Controllers
                 return NotFound();
             }
 
-            var prod = await _context.Prods
-                .FirstOrDefaultAsync(m => m.Label == label);
-            if (prod == null)
+            // Форматируем путь к файлу PDF
+            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "pdf", $"{label}.pdf");
+
+            // Проверяем существование файла
+            if (!System.IO.File.Exists(pathToFile))
             {
-                return NotFound();
+                return NotFound("The requested PDF does not exist on the server.");
             }
 
-            return View(prod);
+            // Читаем файл и отправляем его обратно клиенту
+            byte[] fileBytes = System.IO.File.ReadAllBytes(pathToFile);
+            return File(fileBytes, "application/pdf", $"{label}.pdf");
         }
     }
 }
