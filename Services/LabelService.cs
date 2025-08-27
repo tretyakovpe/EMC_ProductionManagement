@@ -44,7 +44,7 @@ namespace ProductionManagement.Services
 
         private async Task GeneratePdfAsync(Prod box, string description, Material material, string filename)
         {
-            _logger.SendLog($"Создаём бирку для {box.Line}-{box.Label}-{description} - {material.CustomerCode}", "info");
+            //_logger.SendLog($"Создаём бирку для {box.Line}-{box.Label}-{description} - {material.CustomerCode}", "info");
             try
             {
                 Label label = new();

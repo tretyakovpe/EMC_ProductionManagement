@@ -15,28 +15,42 @@ namespace ProductionManagement.Controllers
         }
 
         // GET: Prod
-        public async Task<IActionResult> Index(string line)
+        public async Task<IActionResult> Index(string line, string printer)
         {
             var prods = await _context.Prods
                 .Where(p => p.Line == line)
                 .OrderByDescending(p => p.Date)     // Первичная сортировка по дате в порядке убывания
                 .ThenByDescending(p => p.Time)      // Дополнительная сортировка по времени в порядке убывания
                 .ToListAsync();
+            // Проходим по каждому элементу и проверяем существование файла
+            foreach (var prod in prods)
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{prod.Label}.pdf");
+                prod.FileExists = System.IO.File.Exists(filePath);
+            }
 
-            return View(prods);
+            // Создаем анонимный объект и передаем в представление
+            return View(Tuple.Create(prods.AsEnumerable(), printer));
         }
 
-        // GET: Last50
-        public async Task<IActionResult> Last50(string line)
+        //GET: Last50
+        public async Task<IActionResult> Last50(string line, string printer)
         {
             var prods = await _context.Prods
-                .Where(p => p.Line == line)  // Фильтрация по линии
-                .OrderByDescending(p => p.Date)  // Сортировка по дате в порядке убывания
-                .ThenByDescending(p => p.Time)      // Дополнительная сортировка по времени в порядке убывания
-                .Take(50)  // Ограничение до 50 последних строк
+                .Where(p => p.Line == line)
+                .OrderByDescending(p => p.Date)
+                .ThenByDescending(p => p.Time)
+                .Take(50)
                 .ToListAsync();
+            // Проходим по каждому элементу и проверяем существование файла
+            foreach (var prod in prods)
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{prod.Label}.pdf");
+                prod.FileExists = System.IO.File.Exists(filePath);
+            }
 
-            return View(prods);
+            // Создаем анонимный объект и передаем в представление
+            return View(Tuple.Create(prods.AsEnumerable(), printer));
         }
 
         // GET: Prod/Details/5
@@ -53,12 +67,44 @@ namespace ProductionManagement.Controllers
             // Проверяем существование файла
             if (!System.IO.File.Exists(pathToFile))
             {
-                return NotFound("The requested PDF does not exist on the server.");
+                return NotFound($"Указанного файла {pathToFile} нет на сервере.");
             }
 
             // Читаем файл и отправляем его обратно клиенту
             byte[] fileBytes = System.IO.File.ReadAllBytes(pathToFile);
             return File(fileBytes, "application/pdf", $"{label}.pdf");
         }
+
+        // GET: Prod/Print
+        public async Task<IActionResult> Print(string label, string printer)
+        {
+            if (label == null)
+            {
+                return NotFound();
+            }
+
+            // Форматируем путь к файлу PDF
+            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{label}.pdf");
+
+            // Проверяем существование файла
+            if (!System.IO.File.Exists(pathToFile))
+            {
+                return NotFound($"Указанного файла {pathToFile} нет на сервере.");
+            }
+
+            // Читаем файл и отправляем его обратно клиенту
+            try
+            {
+                // Код для печати PDF-файла
+                System.IO.File.Copy(pathToFile, @"\\NAS\" + printer, true);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка печати {pathToFile} на {printer}: {ex.Message}");
+                return NoContent();
+            }
+        }
+
     }
 }

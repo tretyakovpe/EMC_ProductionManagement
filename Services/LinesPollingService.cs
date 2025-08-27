@@ -160,7 +160,6 @@ public class LinesPollingService : BackgroundService
                             var labelService = scope.ServiceProvider.GetRequiredService<LabelService>();
                             var materialDetails = dbContext.Materials.FirstOrDefault(m => m.MaterialCode == Material);
                             // Передача данных в LabelService для печати бирки
-
                             await labelService.GenerateAndPrintLabelAsync(new Prod
                             {
                                 Date = date,

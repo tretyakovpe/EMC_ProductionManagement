@@ -6,12 +6,17 @@ using ProductionManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Используем внутренний сервер Kestrel
+builder.WebHost.ConfigureKestrel(kestrelOptions =>
+{
+    kestrelOptions.ListenAnyIP(80); // Порт 80 открыт для любых IP
+});
+
 // Настройки конфигурации
 //builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 // Регистрация контекста базы данных
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // Регистрация SignalR
 builder.Services.AddSignalR();
 

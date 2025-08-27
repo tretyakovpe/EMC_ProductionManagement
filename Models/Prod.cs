@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProductionManagement.Models
 {
@@ -29,5 +30,9 @@ namespace ProductionManagement.Models
 
         [Required]
         public int Amount { get; set; }
+        
+        //свойство FileExists, которое не сохраняется в базу данных. Нужно для проверки на контроллере
+        [NotMapped]
+        public bool FileExists { get; set; }
     }
 }

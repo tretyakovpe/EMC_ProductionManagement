@@ -1,63 +1,72 @@
-﻿@model IEnumerable<ProductionManagement.Models.Prod>
+﻿@model Tuple<IEnumerable<ProductionManagement.Models.Prod>, string>
 
 @{
-	Layout = "_Layout";
+    Layout = "_Layout";
 }
 
 <h1>
-	Последние 50 коробок продукции на линии @Model.FirstOrDefault()?.Line
+    Последние 50 коробок продукции на линии @Model.Item2
 </h1>
 
 <p>
-	@Html.ActionLink("Показать все", "Index", "Prod", new { line = Model.FirstOrDefault()?.Line }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Показать все", "Index", "Prod", new { line = Model.Item2 }, new { @class = "btn btn-primary" })
 </p>
 
-<hr/>
+<hr />
 <table class="table">
-	<thead>
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Date)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Time)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Label)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Material)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Amount)
-			</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Date)
-						</td>
-						<td>
-					@(item.Time.ToString(@"hh\:mm\:ss"))
-					@*Html.DisplayFor(modelItem => item.time, "{0:HH:mm:ss}")*@
-						</td>
-						<td>
-					@Html.DisplayFor(modelItem => item.Label)
-						</td>
-						<td>
-					@Html.DisplayFor(modelItem => item.Material)
-						</td>
-						<td>
-					@Html.DisplayFor(modelItem => item.Amount)
-						</td>
-						<td>
-					@Html.ActionLink("Details", "Details", "Prod", new { label = item.Label }, new { @class = "btn btn-secondary" })
-						</td>
-					</tr>
-		}
-	</tbody>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Item1.First().Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item1.First().Time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item1.First().Label)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item1.First().Material)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item1.First().Amount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Item1)
+        {
+            <tr style="background-color:@(item.FileExists ? "#baffd8" : "#ffdac7")">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @(item.Time.ToString(@"hh\:mm\:ss"))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Label)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Material)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "Prod", new { label = item.Label }, new { @class = "btn btn-secondary" })
+                </td>
+                <td>
+                    @if (item.FileExists)
+                    {
+                        <a href="@Url.Action("Print", "Prod", new { label = item.Label, printer = Model.Item2 })" onclick="return confirm('Будет напечатана бирка на принтере станции, всё верно?');" class="btn btn-primary">Повтор печати</a>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-outline-primary">Повтор печати</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>

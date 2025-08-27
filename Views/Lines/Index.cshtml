@@ -16,7 +16,7 @@
 					{
 						<tr class="table-dark">
 							<td><span class="btn @(item.IsOnline?"btn-success":"btn-danger") @(item.IsActive ? "" : "disabled")"> @item.Name </span></td>
-							<td>@Html.ActionLink("Продукция", "Last50", "Prod", new { line = item.Name.Trim() }, null)</td>
+							<td>@Html.ActionLink("Продукция", "Last50", "Prod", new { line = item.Name, printer=item.Printer}, null)</td>
 							<td>@(item.Ip)</td>
 							<td>@(item.Printer)</td>
 							<td><a href="/Lines/Details/@item.Name?mode=edit" class="card-link">Свойства</a></td>

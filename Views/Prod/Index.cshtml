@@ -55,6 +55,9 @@
 				<td>
 					@Html.ActionLink("Подробно", "Details", "Prod", new { label = item.Label }, new { @class = "btn btn-secondary" })
 				</td>
+				<td>
+					@Html.ActionLink("Повтор печати", "Print", "Prod", new { label = item.Label }, new { @class = "btn btn-primary" })
+				</td>
 			</tr>
 		}
 	</tbody>
