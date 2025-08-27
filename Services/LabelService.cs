@@ -61,7 +61,7 @@ namespace ProductionManagement.Services
                 label.SetField("Quantity", box.Amount.ToString());
                 label.SetField("Part name", box.Material);
                 label.SetField("Label number", box.Label);
-                label.SetField("Supplier", "M0FAP");
+                label.SetField("Supplier", "");
                 label.SetField("Date", DT);
                 label.SetField("Packing type", material.HU);
                 label.SetField("Description", description); // Обратите внимание, тут имя поля пустое (" ")

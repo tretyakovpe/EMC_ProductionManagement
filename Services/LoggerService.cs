@@ -30,12 +30,15 @@ public class LoggerService
         {
             case "info":
                 _logger.LogInformation(logMessage);
+                _hubContext.Clients.All.SendAsync("ReceiveLog", logMessage);
                 break;
             case "warn":
                 _logger.LogWarning(logMessage);
+                _hubContext.Clients.All.SendAsync("ReceiveLog", logMessage);
                 break;
             case "error":
                 _logger.LogError(logMessage);
+                _hubContext.Clients.All.SendAsync("ReceiveLog", logMessage);
                 break;
             default:
                 break;

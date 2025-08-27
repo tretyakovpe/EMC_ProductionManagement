@@ -36,7 +36,7 @@ public class LinesPollingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.SendLog("Lines Polling Service is starting."); // Логирование начала работы
+        _logger.SendLog("Lines Polling Service is starting.","info"); // Логирование начала работы
         _isStarted = true;
         // Задержка перед первым опросом
         await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
@@ -113,7 +113,7 @@ public class LinesPollingService : BackgroundService
                 if (partReady)
                 {
                     // Логика обработки готовых данных
-                    _logger.SendLog($"{line.Name} - {partMaterial} {counter}");
+                    _logger.SendLog($"{line.Name} - {partMaterial} - {counter}");
                 }
             }
 
@@ -134,12 +134,12 @@ public class LinesPollingService : BackgroundService
                     // Данные для передачи в процедуру
                     var date = DateTime.Now.Date;
                     var time = DateTime.Now.TimeOfDay;
-                    var label = $"{line.Name.Trim()}{DateTime.Now:yyMMddHHmmss}";
+                    var label = $"{line.Name.Trim()}{DateTime.Now:yyMMddHHmm}";
                     var material = Material;
                     var amount = (int)Amount;
 
                     // Логирование данных перед передачей
-                    _logger.SendLog($"{line.Name} {label} {material} - {amount} шт.");
+                    _logger.SendLog($"{line.Name} - {material} - {amount} шт. {label}","info");
                     if (amount != 0)
                     {
                         // Выполнение хранимой процедуры через контекст базы данных
@@ -173,7 +173,7 @@ public class LinesPollingService : BackgroundService
                         }
                         catch (Exception ex)
                         {
-                            _logger.SendLog($"Ошибка создания и печати бирки в службе Line Polling {ex.Message}");
+                            _logger.SendLog($"Ошибка создания и печати бирки в службе Line Polling {ex.Message}", "error");
                         }
                     }
                 }
@@ -182,7 +182,7 @@ public class LinesPollingService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.SendLog($"{ex} Ошибка при опросе линии {line.Name}","error");
+            _logger.SendLog($"Ошибка при опросе линии {line.Name} {ex.Message}","error");
         }
         finally
         {

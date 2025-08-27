@@ -48,7 +48,7 @@ namespace ProductionManagement.Controllers
             }
 
             // Форматируем путь к файлу PDF
-            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "pdf", $"{label}.pdf");
+            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{label}.pdf");
 
             // Проверяем существование файла
             if (!System.IO.File.Exists(pathToFile))
