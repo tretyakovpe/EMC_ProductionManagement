@@ -36,10 +36,10 @@ public class LinesPollingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.SendLog("Lines Polling Service is starting.","info"); // Логирование начала работы
+        _logger.SendLog("Lines Polling Service is starting.", "info"); // Логирование начала работы
         _isStarted = true;
         // Задержка перед первым опросом
-        await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+        await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
 
         _timer = new PeriodicTimer(TimeSpan.FromMilliseconds(_pollingSettings.PlcPollingIntervalInMilliseconds));
 
@@ -52,7 +52,7 @@ public class LinesPollingService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.SendLog($"{ex}, ошибка службы Lines Polling.","error");
+                _logger.SendLog($"{ex}, ошибка службы Lines Polling.", "error");
             }
         }
         _isStarted = false;
@@ -102,7 +102,7 @@ public class LinesPollingService : BackgroundService
             );
 
             //Чтение данных о каждой детали
-            var partdata = plcService.ReadDataBlock(1013, 0, 34);
+            var partdata = plcService.ReadDataBlock(1013, 0, 36);
             //Сбрасываем флаг "деталь" на линии
             plcService.SetFlagAt(Partready);
             if (partdata != null)
@@ -110,10 +110,14 @@ public class LinesPollingService : BackgroundService
                 string partMaterial = S7.GetStringAt(partdata, 14);
                 bool partReady = S7.GetBitAt(partdata, 2, 2);
                 int counter = S7.GetIntAt(partdata, 32);
+                int boxVolume = S7.GetIntAt(partdata, 34);
+                line.Counter = counter;
+                _logger.UpdateCounter(line.Name, counter, boxVolume); //Посылаем на веб страницу значение для индикатора заполненности коробки
+
                 if (partReady)
                 {
                     // Логика обработки готовых данных
-                    _logger.SendLog($"{line.Name} - {partMaterial} - {counter}");
+                    _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
                 }
             }
 
@@ -125,12 +129,12 @@ public class LinesPollingService : BackgroundService
                 string Material = S7.GetStringAt(db, 2);
                 double Amount = S7.GetRealAt(db, 22);
                 //=======Это извращение для чтения названия продукции. Она прилетает в ASCII
-                string Material_Description = Encoding.GetEncoding(1251).GetString(db, 28, 36);
+                string Material_Description = Encoding.GetEncoding(1251).GetString(db, 28, 36).TrimEnd();
                 //===================
                 if (boxIsReady)
                 {
                     //Сбрасываем флаг "ящик" на линии.
-                    plcService.SetFlagAt(PlcService.StatusType.Boxready);
+                    plcService.SetFlagAt(Boxready);
                     // Данные для передачи в процедуру
                     var date = DateTime.Now.Date;
                     var time = DateTime.Now.TimeOfDay;
@@ -139,7 +143,7 @@ public class LinesPollingService : BackgroundService
                     var amount = (int)Amount;
 
                     // Логирование данных перед передачей
-                    _logger.SendLog($"{line.Name} - {material} - {amount} шт. {label}","info");
+                    _logger.SendLog($"{line.Name} - {material} - {amount} шт. {label}", "info");
                     if (amount != 0)
                     {
                         // Выполнение хранимой процедуры через контекст базы данных
@@ -177,11 +181,10 @@ public class LinesPollingService : BackgroundService
                     }
                 }
             }
-
         }
         catch (Exception ex)
         {
-            _logger.SendLog($"Ошибка при опросе линии {line.Name} {ex.Message}","error");
+            _logger.SendLog($"Ошибка при опросе линии {line.Name} {ex.Message}", "error");
         }
         finally
         {
@@ -191,7 +194,7 @@ public class LinesPollingService : BackgroundService
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.SendLog("Lines Polling Service is stopping.","info");
+        _logger.SendLog("Lines Polling Service is stopping.", "info");
 
         _timer?.Dispose();
 

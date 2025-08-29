@@ -1,7 +1,26 @@
 #logs {
     font-family: verdana;
     resize: none;
-    background-color:darkgray;
+    background-color: darkgray;
     border: 1px solid #ccc;
     padding: 5px;
 }
+
+.progress-container {
+    position: relative;
+    width: 10px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid black;
+}
+
+    .progress-cell {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 0%;
+        background-color: #00bc8c;
+        transition: height 0.3s ease;
+    }

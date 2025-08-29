@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting.WindowsServices;
 using Microsoft.Extensions.Logging;
 using ProductionManagement.Data;
 using ProductionManagement.Hubs;
@@ -6,6 +7,11 @@ using ProductionManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Подключаем конфигурацию для работы в качестве службы Windows
+builder.Host.UseWindowsService(options =>
+{
+    options.ServiceName = "ProductionManagement";// Имя службы
+});
 //Используем внутренний сервер Kestrel
 builder.WebHost.ConfigureKestrel(kestrelOptions =>
 {
@@ -62,4 +68,4 @@ app.MapControllerRoute(
 // Регистрация хаба SignalR
 app.MapHub<LogHub>("/loghub");
 
-app.Run();
+await app.RunAsync();

@@ -7,13 +7,14 @@ public class LoggerService
 {
     private readonly ILogger _logger;
     private readonly IHubContext<LogHub> _hubContext;
+    private string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
     private readonly string _logFilePath;
 
     public LoggerService(ILogger<LoggerService> logger, IHubContext<LogHub> hubContext)
     {
         _logger = logger;
         _hubContext = hubContext;
-        _logFilePath = $"./console/{DateTime.Now:yyyyMMdd-HHmmss}.txt";
+        _logFilePath = $"{_baseDir}/console/{DateTime.Now:yyyyMMdd-HHmmss}.txt";
     }
 
     public void SendLog(string message)
@@ -51,5 +52,10 @@ public class LoggerService
         {
             _logger.LogError(ex, "Ошибка при записи в файл логов.");
         }
+    }
+
+    internal void UpdateCounter(string name, int counter, int volume)
+    {
+        _hubContext.Clients.All.SendAsync("UpdateCell", name, counter, volume);
     }
 }

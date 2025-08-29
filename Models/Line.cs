@@ -41,6 +41,10 @@ public class Line
     [Column("is_active", TypeName = "bit")]
     public bool IsActive { get; set; }
 
+    //Значение счётчика, для интерфейса.
+    [NotMapped]
+    public int Counter { get; set; }
+
     //// Переопределение Equals для сравнения значимых свойств
     //public override bool Equals(object obj)
     //{

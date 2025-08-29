@@ -15,6 +15,8 @@ namespace ProductionManagement.Services
     public class LabelService : IDisposable
     {
         private readonly LoggerService _logger;
+        private string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
         public LabelService(LoggerService logger)
         {
             _logger = logger;
@@ -27,7 +29,7 @@ namespace ProductionManagement.Services
             try
             {
                 // Генерируем имя файла для PDF
-                string fileName = System.IO.Path.Combine(@"./pdf/", $"{box.Label}.pdf");
+                string fileName = System.IO.Path.Combine($"{_baseDir}/pdf/", $"{box.Label}.pdf");
 
                 // Генерация PDF-файла
                 await GeneratePdfAsync(box, Description, material, fileName);

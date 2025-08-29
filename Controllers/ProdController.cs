@@ -8,6 +8,7 @@ namespace ProductionManagement.Controllers
     public class ProdController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
         public ProdController(ApplicationDbContext context)
         {
@@ -25,7 +26,7 @@ namespace ProductionManagement.Controllers
             // Проходим по каждому элементу и проверяем существование файла
             foreach (var prod in prods)
             {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{prod.Label}.pdf");
+                var filePath = Path.Combine(_baseDir, "pdf", $"{prod.Label}.pdf");
                 prod.FileExists = System.IO.File.Exists(filePath);
             }
 
@@ -45,7 +46,7 @@ namespace ProductionManagement.Controllers
             // Проходим по каждому элементу и проверяем существование файла
             foreach (var prod in prods)
             {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{prod.Label}.pdf");
+                var filePath = Path.Combine(_baseDir, "pdf", $"{prod.Label}.pdf");
                 prod.FileExists = System.IO.File.Exists(filePath);
             }
 
@@ -62,7 +63,7 @@ namespace ProductionManagement.Controllers
             }
 
             // Форматируем путь к файлу PDF
-            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{label}.pdf");
+            string pathToFile = Path.Combine(_baseDir, "pdf", $"{label}.pdf");
 
             // Проверяем существование файла
             if (!System.IO.File.Exists(pathToFile))
@@ -84,7 +85,7 @@ namespace ProductionManagement.Controllers
             }
 
             // Форматируем путь к файлу PDF
-            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "pdf", $"{label}.pdf");
+            string pathToFile = Path.Combine(_baseDir, "pdf", $"{label}.pdf");
 
             // Проверяем существование файла
             if (!System.IO.File.Exists(pathToFile))
