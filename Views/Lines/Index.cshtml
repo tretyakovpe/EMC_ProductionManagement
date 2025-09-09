@@ -10,21 +10,33 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-6">
-			<table class="table table-hover">
+			<table class="table table-borderless">
 				<tbody>
 					@foreach (var item in Model)
 					{
-						<tr class="table-dark">
-							<td><span class="btn @(item.IsOnline ? "btn-success" : "btn-danger") @(item.IsActive ? "" : "disabled")"> @item.Name </span></td>
+						<tr class="">
 							<td>
 								<div class="progress-container">
 									<div class="progress-cell" id="progress-cell-@item.Name">&nbsp;</div>
 								</div>
 							</td>
-							<td>@Html.ActionLink("Продукция", "Last50", "Prod", new { line = item.Name, printer = item.Printer }, null)</td>
-							<td>@(item.Ip)</td>
-							<td><a href="http://@(item.Printer.Trim()).emc-tlt.tech">@(item.Printer.Trim())</a></td>
-							<td><a href="/Lines/Details/@item.Name?mode=edit" class="card-link">Свойства</a></td>
+							<td class="">
+								<div class="">
+									<span class="rounded-3 px-1 bg-info-subtle text-dark @(item.IsActive ? "" : "disabled")">
+										<span class="rounded-circle p-2 @(item.IsOnline ? "bg-success" : "bg-danger")" width="48" height="48">
+											@item.Name
+										</span>
+										<span class="px-2">
+											@item.Ip
+										</span>
+									</span>
+								</div>
+							</td>
+							<td>
+								@Html.ActionLink("Продукция", "Last50", "Prod", new { line = item.Name, printer = item.Printer }, new { @class = "btn btn-secondary" })
+							</td>
+							<td><a class="btn btn-secondary" target="_blank" href="http://@(item.Printer.Trim()).emc-tlt.tech" title="@(item.Printer.Trim())">🖨️</a></td>
+							<td><a class="btn btn-secondary" target="_blank" href="/Lines/Details/@item.Name?mode=edit">Свойства</a></td>
 						</tr>
 					}
 				</tbody>
@@ -35,7 +47,7 @@
 		</div>
 	</div>
 </div>
-<script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
+
 <script>
 	const connection = new signalR.HubConnectionBuilder()
 		.withUrl("/loghub")

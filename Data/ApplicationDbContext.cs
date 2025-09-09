@@ -17,6 +17,10 @@ namespace ProductionManagement.Data
 
         public DbSet<Prod> Prods { get; set; }
 
+        public DbSet<Operator> Operators { get; set; }
+
+        public DbSet<Shift> Shifts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Настройка соответствия модели Line с таблицей PLC
@@ -28,8 +32,20 @@ namespace ProductionManagement.Data
             // Настройка соответствия модели Material с таблицей Materials
             modelBuilder.Entity<Material>().ToTable("materials");
 
-            // Настройка ключей и отношений для таблицы PLC
+            // Настройка ключей и отношений для таблицы Materials
             modelBuilder.Entity<Material>().HasKey(m => m.MaterialID); // Предположим, что Name является ключевым полем
+
+            // Настройка соответствия модели Operator с таблицей Operators
+            modelBuilder.Entity<Operator>().ToTable("operators");
+
+            // Настройка ключей и отношений для таблицы Operators
+            modelBuilder.Entity<Operator>().HasKey(o => o.Id);
+
+            // Настройка соответствия модели Shift с таблицей Shifts
+            modelBuilder.Entity<Shift>().ToTable("shifts");
+
+            // Настройка ключей и отношений для таблицы Shifts
+            modelBuilder.Entity<Shift>().HasKey(o => o.Id);
 
             modelBuilder.Entity<Prod>().ToTable("prod");
         }

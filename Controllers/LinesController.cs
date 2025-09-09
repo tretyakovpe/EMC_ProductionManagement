@@ -12,8 +12,46 @@ namespace ProductionManagement.Controllers
         public LinesController(ApplicationDbContext context) => _context = context;
 
         // GET: Lines
-        public async Task<IActionResult> Index() =>
-            View(await _context.Lines.ToListAsync());
+        public async Task<IActionResult> Index()
+        {
+            var result = await _context.Lines
+                                      .Select(l => new Line
+                                      {
+                                          Name = l.Name ?? "",
+                                          Ip = l.Ip ?? "",
+                                          Port = l.Port ?? 0,
+                                          Printer = l.Printer ?? "",
+                                          PrintLabel = l.PrintLabel,
+                                          IsOnline = l.IsOnline,
+                                          LastCheck = l.LastCheck,
+                                          IsActive = l.IsActive,
+                                          Camera = l.Camera ?? ""
+                                      })
+                                      .ToListAsync();
+
+            return View(result);
+        }
+        //Получение полного списка линий.
+        public async Task<IActionResult> GetAllLines()
+        {
+            var result = await _context.Lines
+                                       .Select(l => new Line
+                                       {
+                                           Name = l.Name ?? "",
+                                           Ip = l.Ip ?? "",
+                                           Port = l.Port ?? 0,
+                                           Printer = l.Printer ?? "",
+                                           PrintLabel = l.PrintLabel,
+                                           IsOnline = l.IsOnline,
+                                           LastCheck = l.LastCheck,
+                                           IsActive = l.IsActive,
+                                           Camera = l.Camera ?? ""
+                                       })
+                                       .OrderBy(l => l.Name)
+                                       .ToListAsync();
+
+            return Json(result);
+        }
 
         // GET: Lines/Details/id?mode=edit/create/delete
         public async Task<IActionResult> Details(string id, string mode)

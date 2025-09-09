@@ -26,9 +26,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Регистрация SignalR
 builder.Services.AddSignalR();
 
+// Регистрация сервисов, работающих только в production-среде
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHostedService<LinesManagerService>();
+    builder.Services.AddHostedService<LinesPollingService>();
+}
 // Регистрация Background Services
-builder.Services.AddHostedService<LinesManagerService>();
-builder.Services.AddHostedService<LinesPollingService>();
+//builder.Services.AddHostedService<LinesManagerService>();
+//builder.Services.AddHostedService<LinesPollingService>();
 builder.Services.AddSingleton<LinesPollingService>();
 builder.Services.AddSingleton<LinesManagerService>();
 builder.Services.AddScoped<LabelService>();

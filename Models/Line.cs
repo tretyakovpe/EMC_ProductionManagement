@@ -41,26 +41,13 @@ public class Line
     [Column("is_active", TypeName = "bit")]
     public bool IsActive { get; set; }
 
+    // Свойство для поля 'camera'
+    [Column("camera", TypeName = "varchar(255)")]
+    public string Camera { get; set; } //Nullable
+
     //Значение счётчика, для интерфейса.
     [NotMapped]
     public int Counter { get; set; }
-
-    //// Переопределение Equals для сравнения значимых свойств
-    //public override bool Equals(object obj)
-    //{
-    //    if (obj is Line other)
-    //    {
-    //        return Name == other.Name &&
-    //               Ip == other.Ip &&
-    //               Port == other.Port &&
-    //               Printer == other.Printer &&
-    //               PrintLabel == other.PrintLabel &&
-    //               IsOnline == other.IsOnline &&
-    //               LastCheck == other.LastCheck &&
-    //               IsActive == other.IsActive;
-    //    }
-    //    return false;
-    //}
 
     // Переопределение GetHashCode для корректной работы с коллекциями
     public override int GetHashCode()

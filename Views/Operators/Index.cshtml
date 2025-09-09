@@ -1,0 +1,119 @@
+﻿@{
+	Layout = "_Layout"; // Здесь задаём макет шаблона
+}
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+
+<div class="container mt-5">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>ФИО</th>
+			</tr>
+		</thead>
+		<tbody id="operatorsTableBody">
+			<!-- Загрузка данных через JavaScript -->
+		</tbody>
+	</table>
+</div>
+
+<script>
+	$(document).ready(function () {
+		loadOperators(); // загружаем данные при загрузке страницы
+		// Назначаем обработчик ONCE на всю таблицу, используя делегирование событий
+		$('#operatorsTableBody').on('change', 'input', function(){
+			const inputElement = this;
+			const rowId = inputElement.id;
+
+			if (rowId === 'new') {
+				handleNewOperator(inputElement.value); // Добавляем новую запись
+			} else {
+				handleUpdateOperator(rowId, inputElement.value); // Обновляем существующую запись
+			}
+		});
+
+	});
+
+	// Функция для загрузки операторов
+	function loadOperators() {
+		$.get('/Operators/GetAllOperators')
+			.done(function(data) {
+				const tbody = $('#operatorsTableBody');
+				tbody.empty();
+
+				// Добавляем первую строку для добавления нового оператора
+				addRow(tbody, '<input class="form-control" id="new" type="text" placeholder="Новое имя..."/>', 'new');
+
+				// Добавляем существующие записи
+				$.each(data, function(index, op) {
+					addRow(tbody, '<input class="form-control" id="'+op.id+'" type="text" value="'+op.name+'"/>', op.id);
+				});
+			})
+			.fail(function() {
+				alert('Ошибка при загрузке данных!');
+			});
+	}
+
+	// Вспомогательная функция для добавления строки
+	function addRow(parentElement, cellValue, datasetId) {
+		if(datasetId!="new"){
+			const row = parentElement.append('<tr><td>'+cellValue+'</td><td><button type="button" class="btn btn-sm btn-outline-danger" href="#" onclick="deleteOperator('+datasetId+')">❌</button></td></tr>');
+		}else{
+			const row = parentElement.append('<tr><td>'+cellValue+'</td><td>&nbsp;</td></tr>');
+		}
+	}
+
+	// Функция для добавления нового оператора
+	function handleNewOperator(name) {
+		$.ajax({
+			url: '/Operators/Add',
+			dataType: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: { fullName: name },
+			type: "POST",
+			success: function(response) {
+				alert(response);              // уведомляем об успехе
+				loadOperators();              // перезагружаем таблицу
+			},
+			error: function() {
+				alert('Ошибка при добавлении оператора.');
+			}
+		});
+	}
+
+	// Функция для обновления оператора
+	function handleUpdateOperator(id, name) {
+		$.ajax({
+			url: `/Operators/Update/${id}`,
+			dataType: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: { fullName: name },
+			type: "PUT",
+			success: function(response) {
+				alert(response);          // уведомляем об успехе
+				loadOperators();              // перезагружаем таблицу
+			},
+			error: function() {
+				alert('Ошибка при обновлении оператора.');
+			}
+		});
+	}
+
+	function deleteOperator(id) {
+		$.ajax({
+			url: `/Operators/Delete/${id}`,
+			dataType: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: { id: id },
+			type: "DELETE",
+			success: function(response) {
+				alert(response);          // уведомляем об успехе
+				loadOperators();              // перезагружаем таблицу
+			},
+			error: function() {
+				alert('Ошибка при обновлении оператора.');
+			}
+		});
+	}
+
+</script>

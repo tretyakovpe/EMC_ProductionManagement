@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <h5>Расстановка на смену</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Линия</th>
+                <th>Оператор</th>
+            </tr>
+        </thead>
+        <tbody id="shifts-table-body">
+            <!-- Здесь будет таблица -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let allOperators = []; // Массив для хранения операторов
+
+        // Сначала грузим список операторов
+        $.get('/Operators/GetAllOperators', function(operatorsData) {
+            allOperators = operatorsData;
+
+            // После загрузки операторов, загружаем доступные линии
+            $.get('/Lines/GetAllLines', function(linesData) {
+                linesData.forEach((line) => {
+                    createShiftRow(line.name);
+                });
+            });
+        });
+
+        // Функция для создания строки таблицы
+        function createShiftRow(lineNumber) {
+            // Генерируем варианты для выпадающего списка операторов
+            let selectOptions = [
+                '<option disabled selected hidden>Выберите оператора</option>', // Начальный плейсхолдер
+                ...allOperators.map(op => `<option value="${op.id}">${op.name}</option>`) // Операторы
+            ];
+
+            // Формируем строку таблицы
+            let row = `
+                <tr>
+                    <td><button type="button" class="btn btn-primary">${lineNumber}</button></td>
+                    <td>
+                        <select class="form-select shift-operator" data-line-number="${lineNumber}">
+                            ${selectOptions.join('')}
+                        </select>
+                    </td>
+                </tr>
+            `;
+
+            $("#shifts-table-body").append(row);
+        }
+    });
+</script>
