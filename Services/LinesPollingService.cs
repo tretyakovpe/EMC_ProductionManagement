@@ -116,8 +116,17 @@ public class LinesPollingService : BackgroundService
 
                 if (partReady)
                 {
-                    // Логика обработки готовых данных
-                    _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
+                    var partOk = S7.GetBitAt(partdata, 0, 2);
+                    var partNOk = S7.GetBitAt(partdata, 0, 3);
+                    if (partOk)
+                    {
+                        // Логика обработки готовых данных о каждой детали
+                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
+                    }
+                    if (partNOk)
+                    {
+                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume} - NOK");
+                    }
                 }
             }
 

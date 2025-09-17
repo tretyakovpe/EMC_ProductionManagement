@@ -84,7 +84,7 @@ public class PlcService : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.SendLog($"{ex} Исключение при чтении данных из DB{dbNumber}.", "error");
+            _logger.SendLog($"{ex.Message} Исключение при чтении данных из DB{dbNumber}.", "error");
             return null;
         }
     }
