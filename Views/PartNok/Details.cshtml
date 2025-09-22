@@ -1,0 +1,56 @@
+﻿@model Tuple<ProductionManagement.Models.PartNok, string>
+@using ProductionManagement.Models
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Дата и время</td>
+                <td>@Model.Item1.Datetime</td>
+            </tr>
+            <tr>
+                <td>Линия</td>
+                <td>@Model.Item1.Line</td>
+            </tr>
+            <tr>
+                <td>Тип детали</td>
+                <td>@Model.Item1.Name</td>
+            </tr>
+            <tr>
+                <td>Номер</td>
+                <td>@Model.Item1.Counter</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- Таблица активных MKM -->
+<h5>Таблица ошибок</h5>
+<div class="table-responsive mt-2">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Адрес</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                // Парсим JSON
+                var mkmMappings = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MKMMapping>>(Model.Item2);
+
+                foreach (var entry in mkmMappings)
+                {
+                    <tr>
+                        <td>@entry.Address</td>
+                        <td>@entry.Header</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

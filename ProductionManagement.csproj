@@ -27,4 +27,10 @@
     <Folder Include="video\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="MKM.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

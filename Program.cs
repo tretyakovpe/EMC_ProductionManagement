@@ -34,13 +34,13 @@ if (!builder.Environment.IsDevelopment())
 // Регистрация Background Services
 //builder.Services.AddHostedService<LinesManagerService>();
 //builder.Services.AddHostedService<LinesPollingService>();
-builder.Services.AddSingleton<LinesPollingService>();
-builder.Services.AddSingleton<LinesManagerService>();
+builder.Services.AddScoped<LinesPollingService>();
+builder.Services.AddScoped<LinesManagerService>();
 builder.Services.AddScoped<LabelService>();
 builder.Services.AddScoped<PlcService>();
+builder.Services.AddScoped<PartsManager>();
 builder.Services.AddTransient<LoggerService>();
-// Регистрация TrassirService в DI-контейнере
-builder.Services.AddSingleton<TrassirService>(
+builder.Services.AddScoped<TrassirService>(
     sp => new TrassirService(
         "https://togcctv.emc-tlt.tech:8080/",
         "Script",

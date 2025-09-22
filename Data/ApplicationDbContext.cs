@@ -21,6 +21,8 @@ namespace ProductionManagement.Data
 
         public DbSet<Shift> Shifts { get; set; }
 
+        public DbSet<PartNok> partsNok { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Настройка соответствия модели Line с таблицей PLC
@@ -46,6 +48,12 @@ namespace ProductionManagement.Data
 
             // Настройка ключей и отношений для таблицы Shifts
             modelBuilder.Entity<Shift>().HasKey(o => o.Id);
+
+            // Настройка соответствия модели PartNok с таблицей partNok
+            modelBuilder.Entity<PartNok>().ToTable("partNok");
+
+            // Настройка ключей и отношений для таблицы partNok
+            modelBuilder.Entity<PartNok>().HasKey(o => o.Id);
 
             modelBuilder.Entity<Prod>().ToTable("prod");
         }

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<ProductionManagement.Models.PartNok>
+@{
+    Layout = "_Layout";
+}
+
+<h5>Последние 50 дефектных деталей</h5>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Дата и время</th>
+            <th>Линия</th>
+            <th>Тип детали</th>
+            <th>Номер</th>
+            <th>Подробности</th>
+            <th>Видео</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="accordeon">
+                <td>@Html.DisplayFor(modelItem => item.Datetime)</td>
+                <td>@Html.DisplayFor(modelItem => item.Line)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Counter)</td>
+                <td>
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-part-id="@item.Id">
+                        🔍
+                    </button>
+                </td>
+                <td>
+                    @{
+                        if (item.FileExists)
+                        {
+                            <button type="button" class="btn btn-outline-info" onclick="openVideo('@item.Video')">
+                                Посмотреть
+                            </button>
+                            <a href="@Url.Action("DownloadVideo", new { videoFilename = item.Video })" class="btn btn-outline-danger">
+                                Скачать
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-info disabled">Видео недоступно</button>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Детали дефекта</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="_DetailsPartial"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#detailsModal').on('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Кнопка, которая вызвала модальное окно
+            var partId = button.getAttribute('data-part-id'); // Получаем ID детали
+
+            $.ajax({
+                url: '/PartNok/Details/' + partId,
+                success: function (result) {
+                    $('#detailsModal .modal-body').html(result); // Вставляем частичное представление
+                }
+            });
+        });
+    });
+    function openVideo(videoFilename) {
+        // Формируем URL для видео
+        var videoUrl = '@Url.Action("ShowVideo")?' + new URLSearchParams({ videoFilename: videoFilename });
+
+        // Открываем видео в новой вкладке
+        window.open(videoUrl, '_blank');
+    }
+</script>

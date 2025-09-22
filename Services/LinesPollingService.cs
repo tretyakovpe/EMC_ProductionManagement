@@ -16,6 +16,7 @@ public class LinesPollingService : BackgroundService
     private readonly TrassirService _trassirService;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly LoggerService _logger;
+    private readonly PartsManager _partsManager;
     private readonly PollingSettings _pollingSettings;
 
     private PeriodicTimer? _timer;
@@ -26,12 +27,14 @@ public class LinesPollingService : BackgroundService
         LoggerService logger,
         IHubContext<LogHub> hubContext,
         IOptions<PollingSettings> pollingSettings,
-        TrassirService trassirService)
+        TrassirService trassirService,
+        PartsManager partsManager)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
         _pollingSettings = pollingSettings.Value;
         _trassirService = trassirService;
+        _partsManager = partsManager;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -117,25 +120,47 @@ public class LinesPollingService : BackgroundService
                     //Сбрасываем флаг "деталь" на линии
                     plcService.SetFlagAt(Partready);
 
-                    var partOk = S7.GetBitAt(partdata, 0, 0);
-                    var partNOk = S7.GetBitAt(partdata, 0, 1);
+                    bool partOk = S7.GetBitAt(partdata, 0, 0);
+                    bool partNOk = S7.GetBitAt(partdata, 0, 1);
                     string partMaterial = S7.GetStringAt(partdata, 14);
 
                     // Логика обработки готовых данных о каждой детали
-                    _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
+                    //_logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
 
                     if (partOk)
                     {
-                        // Логика обработки готовых данных о каждой детали
-                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter} - OK");
+                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
                     }
                     if (partNOk)
                     {
-                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter} - NOK");
+                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume} - NOK");
+                        // Ставим таймаут на 30 секунд, чтобы дождаться нужного интервала
+                        await Task.Delay(TimeSpan.FromSeconds(15));
                         _logger.SendLog($"{line.Name} - запрашиваем видео: {line.Camera}");
-                        //Пытаемся получить видео с процессом сборки дефектного
-                        await _trassirService.SaveVideoAsync(line.Camera, DateTime.Now);
 
+                        // Выделяем байты для MKM (позиции 26, 27, 28, 29)
+                        byte[] mkmData = new byte[4];
+                        Array.Copy(partdata, 26, mkmData, 0, 4); // Берем байты с позиций 26-29
+                        //Создаём объект partNok для сохранения в БД
+                        var nokPart = new PartNok
+                        {
+                            Name = partMaterial,
+                            Datetime = DateTime.Now,
+                            Counter = counter,
+                            Mkm = mkmData,
+                            Line = line.Name
+                        };
+                        //Пытаемся получить видео с процессом сборки дефектного
+                        var videoFile = await _trassirService.SaveVideoAsync(line.Name, line.Camera, DateTime.Now);
+                        if (videoFile != null)
+                        {
+                            nokPart.Video = videoFile;
+                        }else
+                        {
+                            nokPart.Video = "0";
+                        }
+                        // Сохраняем новую запись о дефектной детали через PartsManager
+                        await _partsManager.AddPartNokAsync(nokPart);
                     }
                 }
             }

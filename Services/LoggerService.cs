@@ -23,7 +23,7 @@ public class LoggerService
     /// <param name="message">Текст сообщения</param>
     public void SendLog(string message)
     {
-        var logMessage = $"{DateTime.Now.ToString("HH:mm:ss")} - {message}";
+        var logMessage = $"{DateTime.Now.ToString("HH:mm:ss")} - {message}\n\r";
         _logger.LogInformation(logMessage);
         _hubContext.Clients.All.SendAsync("ReceiveLog", logMessage);
     }
@@ -35,7 +35,7 @@ public class LoggerService
     /// <param name="type">тип может быть: info, warn, error</param>
     public void SendLog(string message, string type)
     {
-        string logMessage = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {message}";
+        string logMessage = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {message}\n\r";
         switch (type)
         {
             case "info":

@@ -1,0 +1,133 @@
+[
+  {
+    "address": "26.0",
+    "header": "МКМ1"
+  },
+  {
+    "address": "26.1",
+    "header": "МКМ2"
+  },
+  {
+    "address": "26.2",
+    "header": "МКМ3"
+  },
+  {
+    "address": "26.3",
+    "header": "МКМ4"
+  },
+  {
+    "address": "26.4",
+    "header": "МКМ5"
+  },
+  {
+    "address": "26.5",
+    "header": "МКМ6"
+  },
+  {
+    "address": "26.6",
+    "header": "МКМ7"
+  },
+  {
+    "address": "26.7",
+    "header": "МКМ8"
+  },
+
+  {
+    "address": "27.0",
+    "header": "МКМ9"
+  },
+  {
+    "address": "27.1",
+    "header": "МКМ10"
+  },
+  {
+    "address": "27.2",
+    "header": "МКМ11"
+  },
+  {
+    "address": "27.3",
+    "header": "МКМ12"
+  },
+  {
+    "address": "27.4",
+    "header": "МКМ13"
+  },
+  {
+    "address": "27.5",
+    "header": "МКМ14"
+  },
+  {
+    "address": "27.6",
+    "header": "МКМ15"
+  },
+  {
+    "address": "27.7",
+    "header": "МКМ16"
+  },
+
+  {
+    "address": "28.0",
+    "header": "МКМ17"
+  },
+  {
+    "address": "28.1",
+    "header": "МКМ18"
+  },
+  {
+    "address": "28.2",
+    "header": "МКМ19"
+  },
+  {
+    "address": "28.3",
+    "header": "МКМ20"
+  },
+  {
+    "address": "28.4",
+    "header": "МКМ21"
+  },
+  {
+    "address": "28.5",
+    "header": "МКМ22"
+  },
+  {
+    "address": "28.6",
+    "header": "МКМ23"
+  },
+  {
+    "address": "28.7",
+    "header": "МКМ24"
+  },
+
+  {
+    "address": "29.0",
+    "header": "МКМ25"
+  },
+  {
+    "address": "29.1",
+    "header": "МКМ26"
+  },
+  {
+    "address": "29.2",
+    "header": "МКМ27"
+  },
+  {
+    "address": "29.3",
+    "header": "МКМ28"
+  },
+  {
+    "address": "29.4",
+    "header": "МКМ29"
+  },
+  {
+    "address": "29.5",
+    "header": "МКМ30"
+  },
+  {
+    "address": "29.6",
+    "header": "МКМ31"
+  },
+  {
+    "address": "29.7",
+    "header": "МКМ32"
+  }
+]
