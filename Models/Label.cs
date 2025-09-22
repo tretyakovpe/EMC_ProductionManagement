@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ProductionManagement.Models
+﻿namespace ProductionManagement.Models
 {
     internal class Label
     {

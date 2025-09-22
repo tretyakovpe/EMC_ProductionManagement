@@ -63,7 +63,8 @@ public class LinesManagerService : BackgroundService
                     PrintLabel = l.PrintLabel,
                     IsOnline = l.IsOnline,
                     LastCheck = l.LastCheck,
-                    IsActive = l.IsActive
+                    IsActive = l.IsActive,
+                    Camera = l.Camera
                 })
                 .ToList();
             // Обновляем внутреннее хранилище линий

@@ -95,25 +95,25 @@ public class PlcService : IDisposable
     /// <returns>True if success, False if failed</returns>
     public bool SetFlagAt(StatusType type)
     {
-        int result=-1;
+        int result = -1;
         byte[] f = new byte[1];
 
         switch (type)
         {
             case StatusType.Partready:
                 S7.SetBitAt(f, 0, 2, false);
-                try {result = _plc.DBWrite(1013, 2, 1, f);}
-                catch (Exception ex){_logger.SendLog($"PartReady не сброшен {ex.Message}", "error");}
+                try { result = _plc.DBWrite(1013, 2, 1, f); }
+                catch (Exception ex) { _logger.SendLog($"PartReady не сброшен {ex.Message}", "error"); }
                 break;
             case StatusType.Boxready:
                 S7.SetBitAt(f, 0, 0, false);
                 try { result = _plc.DBWrite(1012, 1, 1, f); }
-                catch (Exception ex){ _logger.SendLog($"BoxReady не сброшен {ex.Message}", "error");}
+                catch (Exception ex) { _logger.SendLog($"BoxReady не сброшен {ex.Message}", "error"); }
                 break;
             case StatusType.Livebit:
                 S7.SetBitAt(f, 0, 0, true);
                 try { result = _plc.DBWrite(1012, 0, 1, f); }
-                catch (Exception ex){_logger.SendLog($"LiveBit не передан {ex.Message}", "error");}
+                catch (Exception ex) { _logger.SendLog($"LiveBit не передан {ex.Message}", "error"); }
                 break;
             default:
                 result = -1;

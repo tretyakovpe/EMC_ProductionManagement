@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting.WindowsServices;
-using Microsoft.Extensions.Logging;
 using ProductionManagement.Data;
 using ProductionManagement.Hubs;
 using ProductionManagement.Services;
@@ -16,6 +14,7 @@ builder.Host.UseWindowsService(options =>
 builder.WebHost.ConfigureKestrel(kestrelOptions =>
 {
     kestrelOptions.ListenAnyIP(80); // Порт 80 открыт для любых IP
+    kestrelOptions.ListenAnyIP(443); // Порт 443 открыт для любых IP
 });
 
 // Настройки конфигурации
@@ -40,6 +39,14 @@ builder.Services.AddSingleton<LinesManagerService>();
 builder.Services.AddScoped<LabelService>();
 builder.Services.AddScoped<PlcService>();
 builder.Services.AddTransient<LoggerService>();
+// Регистрация TrassirService в DI-контейнере
+builder.Services.AddSingleton<TrassirService>(
+    sp => new TrassirService(
+        "https://togcctv.emc-tlt.tech:8080/",
+        "Script",
+        "99015477",
+         sp.GetRequiredService<LoggerService>())
+);
 
 // Регистрация контроллеров и представлений
 builder.Services.AddControllersWithViews();

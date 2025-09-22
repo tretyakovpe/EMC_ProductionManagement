@@ -30,7 +30,7 @@ namespace ProductionManagement.Models
 
         [Required]
         public int Amount { get; set; }
-        
+
         //свойство FileExists, которое не сохраняется в базу данных. Нужно для проверки на контроллере
         [NotMapped]
         public bool FileExists { get; set; }

@@ -13,7 +13,7 @@ namespace ProductionManagement.Services;
 
 public class LinesPollingService : BackgroundService
 {
-    private readonly LinesManagerService _linesManagerService;
+    private readonly TrassirService _trassirService;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly LoggerService _logger;
     private readonly PollingSettings _pollingSettings;
@@ -26,12 +26,12 @@ public class LinesPollingService : BackgroundService
         LoggerService logger,
         IHubContext<LogHub> hubContext,
         IOptions<PollingSettings> pollingSettings,
-        LinesManagerService linesManagerService)
+        TrassirService trassirService)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
         _pollingSettings = pollingSettings.Value;
-        _linesManagerService = linesManagerService;
+        _trassirService = trassirService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,7 +52,7 @@ public class LinesPollingService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.SendLog($"{ex}, ошибка службы Lines Polling.", "error");
+                _logger.SendLog($"{ex.Message}, ошибка службы Lines Polling.", "error");
             }
         }
         _isStarted = false;
@@ -103,29 +103,39 @@ public class LinesPollingService : BackgroundService
 
             //Чтение данных о каждой детали
             var partdata = plcService.ReadDataBlock(1013, 0, 36);
-            //Сбрасываем флаг "деталь" на линии
-            plcService.SetFlagAt(Partready);
             if (partdata != null)
             {
-                string partMaterial = S7.GetStringAt(partdata, 14);
-                bool partReady = S7.GetBitAt(partdata, 2, 2);
                 int counter = S7.GetIntAt(partdata, 32);
                 int boxVolume = S7.GetIntAt(partdata, 34);
                 line.Counter = counter;
-                _logger.UpdateCounter(line.Name, counter, boxVolume); //Посылаем на веб страницу значение для индикатора заполненности коробки
+                //Посылаем на веб страницу значение для индикатора заполненности коробки
+                _logger.UpdateCounter(line.Name, counter, boxVolume);
 
+                bool partReady = S7.GetBitAt(partdata, 2, 2);
                 if (partReady)
                 {
-                    var partOk = S7.GetBitAt(partdata, 0, 2);
-                    var partNOk = S7.GetBitAt(partdata, 0, 3);
+                    //Сбрасываем флаг "деталь" на линии
+                    plcService.SetFlagAt(Partready);
+
+                    var partOk = S7.GetBitAt(partdata, 0, 0);
+                    var partNOk = S7.GetBitAt(partdata, 0, 1);
+                    string partMaterial = S7.GetStringAt(partdata, 14);
+
+                    // Логика обработки готовых данных о каждой детали
+                    _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
+
                     if (partOk)
                     {
                         // Логика обработки готовых данных о каждой детали
-                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
+                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter} - OK");
                     }
                     if (partNOk)
                     {
-                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume} - NOK");
+                        _logger.SendLog($"{line.Name} - {partMaterial} - {counter} - NOK");
+                        _logger.SendLog($"{line.Name} - запрашиваем видео: {line.Camera}");
+                        //Пытаемся получить видео с процессом сборки дефектного
+                        await _trassirService.SaveVideoAsync(line.Camera, DateTime.Now);
+
                     }
                 }
             }
@@ -193,7 +203,7 @@ public class LinesPollingService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.SendLog($"Ошибка при опросе линии {line.Name} {ex.Message}", "error");
+            _logger.SendLog($"Ошибка при опросе линии {line.Name} {ex}", "error");
         }
         finally
         {

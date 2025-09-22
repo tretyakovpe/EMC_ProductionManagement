@@ -1,12 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AnalysisMode>none</AnalysisMode>    
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Costura.Fody" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="itext.bouncy-castle-adapter" Version="9.2.0" />
     <PackageReference Include="itext7" Version="9.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="8.0.19" />
@@ -19,6 +23,8 @@
 
   <ItemGroup>
     <Folder Include="pdf\" />
+    <Folder Include="console\" />
+    <Folder Include="video\" />
   </ItemGroup>
 
 </Project>

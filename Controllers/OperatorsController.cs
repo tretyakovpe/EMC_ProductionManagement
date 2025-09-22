@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductionManagement.Data;
 using ProductionManagement.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ProductionManagement.Controllers
 {

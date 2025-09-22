@@ -14,9 +14,13 @@ public class LoggerService
     {
         _logger = logger;
         _hubContext = hubContext;
-        _logFilePath = $"{_baseDir}/console/{DateTime.Now:yyyyMMdd-HHmmss}.txt";
+        _logFilePath = $"{_baseDir}/console/{DateTime.Now:yyyyMMdd}.txt";
     }
 
+    /// <summary>
+    /// Сохраняет сообщение в лог БЕЗ указания типа
+    /// </summary>
+    /// <param name="message">Текст сообщения</param>
     public void SendLog(string message)
     {
         var logMessage = $"{DateTime.Now.ToString("HH:mm:ss")} - {message}";
@@ -24,6 +28,11 @@ public class LoggerService
         _hubContext.Clients.All.SendAsync("ReceiveLog", logMessage);
     }
 
+    /// <summary>
+    /// Сохраняет сообщение в лог, с указанием типа.
+    /// </summary>
+    /// <param name="message">Текст сообщения</param>
+    /// <param name="type">тип может быть: info, warn, error</param>
     public void SendLog(string message, string type)
     {
         string logMessage = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {message}";
@@ -46,7 +55,7 @@ public class LoggerService
         }
         try
         {
-            File.AppendAllText(_logFilePath,logMessage);
+            File.AppendAllText(_logFilePath, logMessage);
         }
         catch (Exception ex)
         {
