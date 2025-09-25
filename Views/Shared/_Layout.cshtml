@@ -1,55 +1,48 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-bs-theme="dark">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Контроль производства</title>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="~/css/site.css">
-	<script src="~/lib/jquery/dist/jquery.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
 </head>
+
 <body>
-	<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-		<div class="container">
-			@Html.ActionLink("Контроль производства", "Index", "Lines", null, new { @class = "navbar-brand" })
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-				<ul class="navbar-nav flex-grow-1">
-					<li class="nav-item">
-						@Html.ActionLink("Линии", "Index", "Lines", null, new { @class = "nav-link" })
-					</li>
-					<li class="nav-item">
-						@Html.ActionLink("Материалы", "Index", "Materials", null, new { @class = "nav-link" })
-					</li>
-					<li class="nav-item">
-						@Html.ActionLink("Операторы", "Index", "Operators", null, new { @class = "nav-link" })
-					</li>
-					<li class="nav-item">
-						@Html.ActionLink("Смена", "Index", "Shifts", null, new { @class = "nav-link" })
-					</li>
-					<li class="nav-item">
-						@Html.ActionLink("Список NOK", "Index", "PartNok", null, new { @class = "nav-link" })
-					</li>
-			</div>
+	<nav class="navbar navbar-expand-sm px-5">
+		<a class="navbar-brand" href="/Lines">Контроль производства</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarCollapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					@Html.ActionLink("Линии", "Index", "Lines", null, new { @class = "nav-link" })
+				</li>
+				<li class="nav-item">
+					@Html.ActionLink("Материалы", "Index", "Materials", null, new { @class = "nav-link" })
+				</li>
+				<li class="nav-item">
+					@Html.ActionLink("Операторы", "Index", "Operators", null, new { @class = "nav-link" })
+				</li>
+				<li class="nav-item">
+					@Html.ActionLink("Смена", "Index", "Shifts", null, new { @class = "nav-link" })
+				</li>
+				<li class="nav-item">
+					@Html.ActionLink("Список NOK", "Index", "PartNok", null, new { @class = "nav-link" })
+				</li>
+			</ul>
 		</div>
 	</nav>
-
-	<div class="container">
-		<main role="main" class="row">
+	<hr />
+	<div class="container m-3">
+		<main role="main" class="row justify-content-center">
 			@RenderBody()
 		</main>
 	</div>
-
-	<footer class="border-top footer text-muted">
-		<div class="container">
-			&copy; 2025 - Контроль производства
-		</div>
-	</footer>
-	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

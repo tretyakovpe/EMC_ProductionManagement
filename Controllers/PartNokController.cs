@@ -38,6 +38,25 @@ namespace ProductionManagement.Controllers
             return View(last50NokParts);
         }
 
+        public async Task<IActionResult> Last50ByLine(string Line)
+        {
+            var last50NokParts = await _partsManager.GetLatest50PartNoksForLineAsync(Line);
+            // Проверяем наличие файлов видео и устанавливаем признак наличия
+            foreach (var part in last50NokParts)
+            {
+                if (part.Video != null)
+                {
+                    var videoPath = Path.Combine(_env.ContentRootPath, "video", part.Video);
+                    part.FileExists = System.IO.File.Exists(videoPath);
+                }
+                else
+                {
+                    part.FileExists = false;
+                }
+            }
+            return View("Index", last50NokParts);
+        }
+
         // GET: PartNok/Details/5
         public async Task<IActionResult> Details(int id)
         {

@@ -35,7 +35,7 @@ public class LoggerService
     /// <param name="type">тип может быть: info, warn, error</param>
     public void SendLog(string message, string type)
     {
-        string logMessage = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {message}\n\r";
+        string logMessage = $"{DateTime.Now:dd.MM.yyyy HH:mm:ss} - {message}\n\r";
         switch (type)
         {
             case "info":
@@ -63,8 +63,13 @@ public class LoggerService
         }
     }
 
-    internal void UpdateCounter(string name, int counter, int volume)
+    internal void UpdateCounter(string name, string type, int counter, int volume)
     {
-        _hubContext.Clients.All.SendAsync("UpdateCell", name, counter, volume);
+        _hubContext.Clients.All.SendAsync("UpdateCell", name, type, counter, volume);
+    }
+
+    internal void NewPart(string name)
+    {
+        _hubContext.Clients.All.SendAsync("NewPart", name);
     }
 }

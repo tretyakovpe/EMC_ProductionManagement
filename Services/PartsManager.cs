@@ -35,6 +35,16 @@ namespace ProductionManagement.Services
                 .ToListAsync();
         }
 
+        // Получение последних 50 записей PartNok по конкретной линии
+        public async Task<List<PartNok>> GetLatest50PartNoksForLineAsync(string lineName)
+        {
+            return await _context.partsNok
+                .Where(p => p.Line == lineName) // Фильтруем по названию линии
+                .OrderByDescending(p => p.Datetime) // Сортируем по убыванию даты-времени
+                .Take(50)                          // Берём первые 50 записей
+                .ToListAsync();                     // Выполняем асинхронный запрос
+        }
+
         // Получение конкретной записи PartNok по идентификатору
         public async Task<PartNok?> GetPartNokByIdAsync(int id)
         {

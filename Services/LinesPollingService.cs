@@ -110,9 +110,10 @@ public class LinesPollingService : BackgroundService
             {
                 int counter = S7.GetIntAt(partdata, 32);
                 int boxVolume = S7.GetIntAt(partdata, 34);
+                string partMaterial = S7.GetStringAt(partdata, 14);
                 line.Counter = counter;
                 //Посылаем на веб страницу значение для индикатора заполненности коробки
-                _logger.UpdateCounter(line.Name, counter, boxVolume);
+                _logger.UpdateCounter(line.Name, partMaterial, counter, boxVolume);
 
                 bool partReady = S7.GetBitAt(partdata, 2, 2);
                 if (partReady)
@@ -122,7 +123,6 @@ public class LinesPollingService : BackgroundService
 
                     bool partOk = S7.GetBitAt(partdata, 0, 0);
                     bool partNOk = S7.GetBitAt(partdata, 0, 1);
-                    string partMaterial = S7.GetStringAt(partdata, 14);
 
                     // Логика обработки готовых данных о каждой детали
                     //_logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
@@ -130,11 +130,12 @@ public class LinesPollingService : BackgroundService
                     if (partOk)
                     {
                         _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
+                        _logger.NewPart(line.Name);
                     }
                     if (partNOk)
                     {
                         _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume} - NOK");
-                        // Ставим таймаут на 30 секунд, чтобы дождаться нужного интервала
+                        // Ставим таймаут на 15 секунд, чтобы дождаться нужного интервала
                         await Task.Delay(TimeSpan.FromSeconds(15));
                         _logger.SendLog($"{line.Name} - запрашиваем видео: {line.Camera}");
 
