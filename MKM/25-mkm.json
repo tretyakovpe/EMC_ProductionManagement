@@ -1,0 +1,130 @@
+[
+  {
+    "address": "26.0",
+    "header": "МКМ1"
+  },
+  {
+    "address": "26.1",
+    "header": "МКМ2"
+  },
+  {
+    "address": "26.2",
+    "header": "VPM NOK"
+  },
+  {
+    "address": "26.3",
+    "header": "HALL NOK"
+  },
+  {
+    "address": "26.4",
+    "header": "XLG NOK"
+  },
+  {
+    "address": "26.5",
+    "header": "Upper Cable NOK"
+  },
+  {
+    "address": "26.6",
+    "header": "Lower Cable NOK"
+  },
+  {
+    "address": "26.7",
+    "header": "Delivery position NOK"
+  },
+  {
+    "address": "27.0",
+    "header": "Endstop NOK"
+  },
+  {
+    "address": "27.1",
+    "header": "KFES NOK"
+  },
+  {
+    "address": "27.2",
+    "header": "Slider type NOK"
+  },
+  {
+    "address": "27.3",
+    "header": "Slider color NOK"
+  },
+  {
+    "address": "27.4",
+    "header": "Upper and Lower Cable NOK"
+  },
+  {
+    "address": "27.5",
+    "header": "МКМ14"
+  },
+  {
+    "address": "27.6",
+    "header": "Air drop out"
+  },
+  {
+    "address": "27.7",
+    "header": "МКМ16"
+  },
+  {
+    "address": "28.0",
+    "header": "МКМ17"
+  },
+  {
+    "address": "28.1",
+    "header": "МКМ18"
+  },
+  {
+    "address": "28.2",
+    "header": "МКМ19"
+  },
+  {
+    "address": "28.3",
+    "header": "МКМ20"
+  },
+  {
+    "address": "28.4",
+    "header": "МКМ21"
+  },
+  {
+    "address": "28.5",
+    "header": "МКМ22"
+  },
+  {
+    "address": "28.6",
+    "header": "МКМ23"
+  },
+  {
+    "address": "28.7",
+    "header": "МКМ24"
+  },
+  {
+    "address": "29.0",
+    "header": "МКМ25"
+  },
+  {
+    "address": "29.1",
+    "header": "МКМ26"
+  },
+  {
+    "address": "29.2",
+    "header": "МКМ27"
+  },
+  {
+    "address": "29.3",
+    "header": "МКМ28"
+  },
+  {
+    "address": "29.4",
+    "header": "МКМ29"
+  },
+  {
+    "address": "29.5",
+    "header": "МКМ30"
+  },
+  {
+    "address": "29.6",
+    "header": "МКМ31"
+  },
+  {
+    "address": "29.7",
+    "header": "МКМ32"
+  }
+]

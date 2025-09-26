@@ -31,9 +31,11 @@ namespace ProductionManagement.Models
         [Column("mkm", TypeName = "varbinary(4)")]
         public byte[] Mkm { get; set; }
 
+        //Название видеофайла
         [Column("video", TypeName = "nvarchar(50)")]
         public string Video { get; set; }
 
+        //Номер линии
         [Column("line", TypeName = "nvarchar(3)")]
         public string Line { get; set; }
 

@@ -28,7 +28,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="MKM.json">
+    <Content Update="MKM\79-mkm.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MKM\74-mkm.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MKM\73-mkm.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

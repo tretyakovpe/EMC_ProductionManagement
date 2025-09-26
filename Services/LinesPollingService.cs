@@ -217,6 +217,7 @@ public class LinesPollingService : BackgroundService
                                 Label = label,
                                 Material = material,
                                 Amount = amount,
+                                Shift = "0"
                             }, Material_Description, materialDetails, line.Printer.Trim());
                         }
                         catch (Exception ex)

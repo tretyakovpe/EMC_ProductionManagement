@@ -85,7 +85,7 @@ namespace ProductionManagement.Services
             }
 
             // Шаг 5: Сохраняем файл
-            string filename = $"{lineName}-{moment:yyMMddHHmm}.mp4";
+            string filename = $"{lineName}-{moment:yyMMddHHmmss}.mp4";
             try
             {
                 Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "video")); // Создаем директорию, если её нет

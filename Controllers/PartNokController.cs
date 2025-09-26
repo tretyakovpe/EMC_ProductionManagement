@@ -64,24 +64,15 @@ namespace ProductionManagement.Controllers
             var part = await _partsManager.GetPartNokByIdAsync(id);
 
             // Готовим JSON с состояниями активных MKM
-            var mkmJson = GenerateActiveMkmJson(part.Mkm);
-
-            // Передаём данные в представление
-            return View(new Tuple<PartNok, string>(part, mkmJson));
-        }
-
-        // Генерируем JSON с состояниями активных MKM
-        private string GenerateActiveMkmJson(byte[] mkm)
-        {
             // Читаем JSON-маркировку
-            var mapping = ReadMappingFile();
+            var json = System.IO.File.ReadAllText(Path.Combine(_env.ContentRootPath,"MKM", $"{part.Line.Trim()}-mkm.json"));
+            var mapping = JsonConvert.DeserializeObject<IEnumerable<MKMMapping>>(json);
 
             // Собираем активные биты
             var activeBits = new List<MKMMapping>();
-
-            for (int i = 0; i < mkm.Length; i++)
+            for (int i = 0; i < part.Mkm.Length; i++)
             {
-                var bits = Enumerable.Range(0, 8).Select(b => (mkm[i] & (1 << b)) != 0).Reverse().ToArray();
+                var bits = Enumerable.Range(0, 8).Select(b => (part.Mkm[i] & (1 << b)) != 0).Reverse().ToArray();
 
                 for (int j = 0; j < bits.Length; j++)
                 {
@@ -97,15 +88,9 @@ namespace ProductionManagement.Controllers
                     }
                 }
             }
-
-            return JsonConvert.SerializeObject(activeBits);
-        }
-
-        // Читаем файл разметки MKM
-        private IEnumerable<MKMMapping> ReadMappingFile()
-        {
-            var json = System.IO.File.ReadAllText(Path.Combine(_env.ContentRootPath, "mkm.json"));
-            return JsonConvert.DeserializeObject<IEnumerable<MKMMapping>>(json);
+            var mkmJson = JsonConvert.SerializeObject(activeBits);
+            // Передаём данные в представление
+            return View(new Tuple<PartNok, string>(part, mkmJson));
         }
 
         // Показ видео во всплывающем окне
