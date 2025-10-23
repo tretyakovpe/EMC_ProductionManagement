@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProductionManagement.Data;
 using ProductionManagement.Models;
 
@@ -8,10 +9,7 @@ namespace ProductionManagement.Services
     {
         private readonly ApplicationDbContext _context;
 
-        public PartsManager(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public PartsManager(ApplicationDbContext context) => _context = context;
 
         // Добавление новой записи PartNok в базу данных
         public async Task AddPartNokAsync(PartNok partNok)

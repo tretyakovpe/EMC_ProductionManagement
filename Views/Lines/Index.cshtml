@@ -37,7 +37,7 @@
 								@Html.ActionLink("📦", "Last50", "Prod", new { line = item.Name, printer = item.Printer }, new { @title = "Продукция", @class = "btn btn-outline-secondary" })
 								@Html.ActionLink("🚫", "Last50ByLine", "PartNok", new { line = item.Name }, new { @title = "Дефекты", @class = "btn btn-outline-danger" })
 								@Html.Raw("<a class=\"btn btn-outline-secondary\" target=\"_blank\" href=\"" + Url.Content("//" + item.Printer.Trim() + ".emc-tlt.tech") + "\" title=\"" + Html.Encode(item.Printer.Trim()) + "\">🖨️</a>")
-								@Html.ActionLink("⚙️", "Details", "Lines", new { id = item.Name, mode = "edit" }, new { @title = "Настройка", @class = "btn btn-outline-secondary", target = "_blank" })
+								@Html.ActionLink("⚙️", "Details", "Lines", new { id = item.Name, mode = "edit" }, new { @title = "Настройка", @class = "btn btn-outline-secondary"})
 							</div>
 						</div>
 					}
@@ -94,11 +94,5 @@
 		} else {
 			console.error("Не найден элемент с id:", "progress-cell-" + Id);
 		}
-	});
-
-	connection.on('NewPart', function(id){
-		const tr_line = document.getElementById("line-" + id+" ");
-		tr_line.classList.remove('flash-effect');
-		requestAnimationFrame(() => tr_line.classList.add('flash-effect'));
 	});
 </script>

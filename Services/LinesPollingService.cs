@@ -17,6 +17,7 @@ public class LinesPollingService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly LoggerService _logger;
     private readonly PartsManager _partsManager;
+    private readonly ProgressManager _progressManager;
     private readonly PollingSettings _pollingSettings;
 
     private PeriodicTimer? _timer;
@@ -28,13 +29,16 @@ public class LinesPollingService : BackgroundService
         IHubContext<LogHub> hubContext,
         IOptions<PollingSettings> pollingSettings,
         TrassirService trassirService,
-        PartsManager partsManager)
+        PartsManager partsManager,
+        ProgressManager progressManager
+        )
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
         _pollingSettings = pollingSettings.Value;
         _trassirService = trassirService;
         _partsManager = partsManager;
+        _progressManager = progressManager;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -80,6 +84,8 @@ public class LinesPollingService : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var plcService = scope.ServiceProvider.GetRequiredService<PlcService>();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+
         try
         {
             //_logger.SendLog($"Пытаемся прочитать линию {line.Name} - {line.Ip}");
@@ -91,7 +97,7 @@ public class LinesPollingService : BackgroundService
                     "EXEC dbo.UpdateIsOnline @LineName, @IsOnline",
                     new SqlParameter("@LineName", line.Name),
                     new SqlParameter("@IsOnline", false)
-                );
+                    );
                 return;
             }
             //Ставим лайвбит
@@ -102,7 +108,7 @@ public class LinesPollingService : BackgroundService
                 "EXEC dbo.UpdateIsOnline @LineName, @IsOnline",
                 new SqlParameter("@LineName", line.Name),
                 new SqlParameter("@IsOnline", true)
-            );
+                );
 
             //Чтение данных о каждой детали
             var partdata = plcService.ReadDataBlock(1013, 0, 36);
@@ -130,7 +136,15 @@ public class LinesPollingService : BackgroundService
                     if (partOk)
                     {
                         _logger.SendLog($"{line.Name} - {partMaterial} - {counter}/{boxVolume}");
-                        _logger.NewPart(line.Name);
+                        try
+                        {
+                            //Просто обновляем данные из Экселя.
+                            await _progressManager.AddOrUpdateProgressAsync(partMaterial, "", 0);
+                        }
+                        catch (Exception exc)
+                        {
+                            _logger.SendLog($"{line.Name} - Ошибка обработки прогресса:{exc.Message}");
+                        }
                     }
                     if (partNOk)
                     {
@@ -156,7 +170,8 @@ public class LinesPollingService : BackgroundService
                         if (videoFile != null)
                         {
                             nokPart.Video = videoFile;
-                        }else
+                        }
+                        else
                         {
                             nokPart.Video = "0";
                         }
@@ -191,7 +206,7 @@ public class LinesPollingService : BackgroundService
                     _logger.SendLog($"{line.Name} - {material} - {amount} шт. {label}", "info");
                     if (amount != 0)
                     {
-                        // Выполнение хранимой процедуры через контекст базы данных
+                        // Добавление новой коробки через хранимую процедуру
                         await dbContext.Database.ExecuteSqlRawAsync(
                             "EXEC dbo.AddBox @Date, @Time, @labelNumber, @Name, @Material, @Amount",
                             new SqlParameter("@Date", date),
@@ -201,7 +216,18 @@ public class LinesPollingService : BackgroundService
                             new SqlParameter("@Material", material),
                             new SqlParameter("@Amount", amount)
                         );
+                        //Сохраняем данные прогресса по смене для мониторинга.
+                        try
+                        {
+                            //Добавляем законченную коробку для монитора прогресса.
+                            await _progressManager.AddOrUpdateProgressAsync(material, Material_Description, amount);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.SendLog($"Ошибка сохранения прогресса: {ex.Message}", "error");
+                        }
                     }
+                    //Печатаем бирку
                     if (line.PrintLabel)
                     {
                         try

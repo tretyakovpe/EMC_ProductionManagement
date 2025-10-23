@@ -16,7 +16,7 @@ namespace ProductionManagement.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(GetAllOperators());
+            return View();
         }
 
         // Получаем список операторов

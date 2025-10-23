@@ -67,9 +67,4 @@ public class LoggerService
     {
         _hubContext.Clients.All.SendAsync("UpdateCell", name, type, counter, volume);
     }
-
-    internal void NewPart(string name)
-    {
-        _hubContext.Clients.All.SendAsync("NewPart", name);
-    }
 }

@@ -23,6 +23,8 @@ namespace ProductionManagement.Data
 
         public DbSet<PartNok> partsNok { get; set; }
 
+        public DbSet<Progress> Progress { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Настройка соответствия модели Line с таблицей PLC
@@ -54,6 +56,12 @@ namespace ProductionManagement.Data
 
             // Настройка ключей и отношений для таблицы partNok
             modelBuilder.Entity<PartNok>().HasKey(o => o.Id);
+
+            // Настройка соответствия модели Progress с таблицей progress
+            modelBuilder.Entity<Progress>().ToTable("progress");
+
+            // Настройка ключей и отношений для таблицы progress
+            modelBuilder.Entity<Progress>().HasKey(o => o.Id);
 
             modelBuilder.Entity<Prod>().ToTable("prod");
         }

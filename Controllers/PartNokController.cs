@@ -57,7 +57,7 @@ namespace ProductionManagement.Controllers
             return View("Index", last50NokParts);
         }
 
-        // GET: PartNok/Details/5
+        // GET: PartNok/Details
         public async Task<IActionResult> Details(int id)
         {
             // Получаем запись PartNok по ID

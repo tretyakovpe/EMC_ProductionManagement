@@ -1,26 +1,25 @@
 ﻿@model ProductionManagement.Models.Line
 
 @{
-	Layout = "_Layout";
 	bool isCreateMode = Model.Name == null;
-	bool isDeleteMode = ViewBag.mode == "delete";
+	bool isDeleteMode = ViewBag.Mode == "delete";
 }
 <!DOCTYPE html>
 <html>
 <head>
 	<meta name="viewport" content="width=device-width" />
-	<title>Details</title>
+	<title>Свойства линии</title>
 </head>
 <body>
 	<div>
-		<h4>Line</h4>
+		<h4>Линия</h4>
 		<hr />
 		@if (isDeleteMode)
 		{
 			<form asp-action="Delete" method="post">
 				@Html.AntiForgeryToken()
 				<input type="hidden" asp-for="id" />
-				<input type="hidden" name="mode" value="@ViewBag.Mode" />
+				<input type="hidden" name="mode" value="@ViewBag.mode" />
 
 				<p>Are you sure you want to delete this record?</p>
 
@@ -48,6 +47,9 @@
 
 					<dt class="col-sm-2">Принтер</dt>
 					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.Printer) : Html.DisplayFor(m => m.Printer))</dd>
+
+					<dt class="col-sm-2">Камера</dt>
+					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.Camera) : Html.DisplayFor(m => m.Camera))</dd>
 
 					<dt class="col-sm-2">Нужна печать?</dt>
 					<dd class="col-sm-10">@(!isDeleteMode ? Html.EditorFor(m => m.PrintLabel) : Html.DisplayFor(m => m.PrintLabel))</dd>

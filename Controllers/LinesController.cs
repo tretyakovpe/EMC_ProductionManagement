@@ -25,7 +25,7 @@ namespace ProductionManagement.Controllers
                                           IsOnline = l.IsOnline,
                                           LastCheck = l.LastCheck,
                                           IsActive = l.IsActive,
-                                          Camera = l.Camera ?? ""
+                                          Camera = l.Camera ?? "no"
                                       })
                                       .ToListAsync();
 
@@ -45,7 +45,7 @@ namespace ProductionManagement.Controllers
                                            IsOnline = l.IsOnline,
                                            LastCheck = l.LastCheck,
                                            IsActive = l.IsActive,
-                                           Camera = l.Camera ?? ""
+                                           Camera = l.Camera ?? " "
                                        })
                                        .OrderBy(l => l.Name)
                                        .ToListAsync();
@@ -58,7 +58,7 @@ namespace ProductionManagement.Controllers
         {
             if (id == null && mode != "create") return NotFound();
             var line = await _context.Lines.FindAsync(id);
-            ViewBag.mode = mode;
+            ViewBag.Mode = mode;
             switch (mode)
             {
                 case "create": return View(new Line());
@@ -77,7 +77,18 @@ namespace ProductionManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Details(Line line, string mode)
         {
-            if (!ModelState.IsValid) return View(line);
+            if (!ModelState.IsValid)
+            {
+                foreach (var state in ModelState.Values)
+                {
+                    foreach (var error in state.Errors)
+                    {
+                        Console.WriteLine($"Ошибка проверки модели: {error.ErrorMessage}");
+                    }
+                }
+                return View(line);
+            }
+
             switch (mode)
             {
                 case "create": _context.Add(line); break;

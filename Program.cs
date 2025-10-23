@@ -38,7 +38,8 @@ builder.Services.AddScoped<LinesPollingService>();
 builder.Services.AddScoped<LinesManagerService>();
 builder.Services.AddScoped<LabelService>();
 builder.Services.AddScoped<PlcService>();
-builder.Services.AddScoped<PartsManager>();
+builder.Services.AddTransient<PartsManager>();
+builder.Services.AddTransient<ProgressManager>();
 builder.Services.AddTransient<LoggerService>();
 builder.Services.AddScoped<TrassirService>(
     sp => new TrassirService(
@@ -72,12 +73,18 @@ app.UseResponseCaching();
 app.UseStaticFiles();
 app.UseAuthorization();
 
-// Топ-уровневая регистрация маршрутов
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Lines}/{action=Index}/{id?}"
-);
-
+if (app.Environment.IsDevelopment()) // Проверяем среду разработки
+{
+    app.MapControllerRoute(
+        name: "development_default",
+        pattern: "{controller=Progress}/{action=Display}/{id?}");
+}
+else
+{
+    app.MapControllerRoute(
+        name: "production_default",
+        pattern: "{controller=Lines}/{action=Index}/{id?}");
+}
 // Регистрация хаба SignalR
 app.MapHub<LogHub>("/loghub");
 
