@@ -63,7 +63,7 @@ namespace ProductionManagement.Services
                 label.SetField("Quantity", box.Amount.ToString());
                 label.SetField("Part name", box.Material);
                 label.SetField("Label number", box.Label);
-                label.SetField("Supplier", "");
+                label.SetField("Supplier", $"3OS{box.Material}{box.Label}"); // для генерации комбинированного штрихкода
                 label.SetField("Date", DT);
                 label.SetField("Packing type", material.HU);
                 label.SetField("Description", description); // Обратите внимание, тут имя поля пустое (" ")

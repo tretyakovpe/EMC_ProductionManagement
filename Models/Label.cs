@@ -30,19 +30,19 @@
         {
             LabelFields = new List<Field>()
             {
-                new Field(6,139,"Destination","АвтоВАЗ", false),                 // 0
+                new Field(6,139,"Destination","АвтоВАЗ", false),                // 0
                 new Field(106,139,"Delivery place", "TEST", false),             // 1
                 new Field(6,114,"Document #", "TEST", false),                   // 2
-                new Field(106,114,"Supplier address","Северная, 6а", false),   // 3
+                new Field(106,114,"Supplier address","Северная, 6а", false),    // 3
                 new Field(106,102,"Netto","0", false),                          // 4
                 new Field(141,102,"Brutto","0", false),                         // 5
                 new Field(172,102,"Boxes","0", false),                          // 6
                 new Field(6,89,"Product", "TEST", false),                       // 7
                 new Field(6,64,"Quantity","TEST", false),                       // 8
-                new Field(106,64,"Part name","TEST", true, 106,39, 36, "3OS"), // 9
+                new Field(106,64,"Part name","TEST", false, 106,39, 36, "3OS"),  // 9
                 new Field(6,39,"Label number","TEST", false),                   // 10
-                new Field(106,39,"Supplier","", false),                         // 11
-                new Field(6,14,"Date","01.01.2022", false),                    // 12
+                new Field(106,39,"Supplier","", true, 106,12,36),               // 11
+                new Field(6,14,"Date","01.01.2022", false),                     // 12
                 new Field(106,14,"Packing type","TEST", false),                 // 13
                 new Field(70,89,"Description", "Стеклоподъемник электрический", false),   // 14
             };
